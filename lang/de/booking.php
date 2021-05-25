@@ -791,6 +791,7 @@ $string['bookinginstancetemplatessettings'] = 'Buchungsvorlagen';
 $string['bookinginstancetemplatename'] = 'Name der Buchungsvorlage';
 $string['managebookinginstancetemplates'] = 'Buchungsvorlagen verwalten';
 $string['populatefromtemplate'] = 'Mit Buchungvorlage ausfüllen';
+$string['notemplateyet'] = 'Es gibt noch kein Template';
 
 // Institutions.php.
 $string['institutions'] = 'Institutionen';

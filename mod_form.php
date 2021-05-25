@@ -80,13 +80,18 @@ class mod_booking_mod_form extends moodleform_mod {
         $bookininstancetemplates = array('' => '');
         $bookinginstances = $DB->get_records('booking_instancetemplate', array(), '', 'id, name', 0, 0);
 
-        foreach ($bookinginstances as $key => $value) {
-            $bookininstancetemplates[$value->id] = $value->name;
+        // If there are no
+        if (count($bookinginstances) == 0) {
+            $mform->addElement('static', 'instancetemplateid', get_string('populatefromtemplate', 'booking'),
+                    get_string('notemplateyet', 'booking'));
+        } else {
+            foreach ($bookinginstances as $key => $value) {
+                $bookininstancetemplates[$value->id] = $value->name;
+            }
+            $mform->addElement('select', 'instancetemplateid', get_string('populatefromtemplate', 'booking'),
+                    $bookininstancetemplates);
         }
-
-        $mform->addElement('select', 'instancetemplateid', get_string('populatefromtemplate', 'booking'),
-            $bookininstancetemplates);
-
+        
         $mform->addElement('text', 'name', get_string('bookingname', 'booking'),
                 array('size' => '64'));
         if (!empty($CFG->formatstringstriptags)) {
