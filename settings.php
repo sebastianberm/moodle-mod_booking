@@ -42,7 +42,7 @@ if ($ADMIN->fulltree) {
             get_string('licensekeycfg', 'mod_booking'),
             get_string('licensekeycfgdesc', 'mod_booking')));
 
-    // Dynamically change the license info text
+    // Dynamically change the license info text.
     $licensekeydesc = get_string('licensekeydesc', 'mod_booking');
 
     // get license key which has been set in text field

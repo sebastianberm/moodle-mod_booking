@@ -262,6 +262,8 @@ $string['shorturl'] = 'Verkürzter Link zu dieser Buchungsoption';
 $string['generatenewurl'] = 'Neue Kurz-URL generieren';
 $string['notes'] = 'Anmerkungen zur Buchung';
 
+$string['electivesettings'] = 'Wahlfach Einstellungen';
+
 $string['pollurlteachers_help'] = 'Folgende Platzhalter können im Text verwendet werden:
 <ul>
 <li>{status}</li>
@@ -580,6 +582,13 @@ $string['newtemplatesaved'] = 'Neue Buchungsoptionsvorlage wurde gespeichert.';
 $string['option_template_not_saved_no_valid_license'] = 'Buchungsoption konnte nicht als Vorlage gespeichert werden. 
                                                   Holen Sie sich die PRO-Version, um beliebig viele Vorlagen erstellen 
                                                   zu können.';
+$string['useaselective'] = 'Verwende Instanz als Wahlfach';
+$string['useaselective_help'] = 'Damit können NutzerInnen gezwungen werden, mehrere Buchungen auf einmal in einer bestimmten Reihenfolge und in gewissen Beziehungen zueinander vorzunehmen, außerdem kann der Verbrauch von Credits erzwungen werden.';
+$string['maxcredits'] = 'Anzahl verfügbare Credits';
+$string['maxcredits_help'] = 'Sie können die maximal in dieser Buchung verfügbaren Credits angeben, die verbraucht werden können oder müssen. Für jede Buchungsoption können die entsprechenden Credits angegeben werden.';
+$string['unlimitedcredits'] = 'Verwende keine Credits';
+$string['forceconsecutive'] = 'Erzwinge Reihenfolge';
+$string['forceconsecutive_help'] = 'NutzerInnen werden erst nach Abschluss des vorangegangene Kurses in den nächsten Kurs eingeschrieben.';
 
 // Importoptions.php.
 $string['csvfile'] = 'CSV Datei';

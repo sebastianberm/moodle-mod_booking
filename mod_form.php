@@ -80,7 +80,7 @@ class mod_booking_mod_form extends moodleform_mod {
         $bookininstancetemplates = array('' => '');
         $bookinginstances = $DB->get_records('booking_instancetemplate', array(), '', 'id, name', 0, 0);
 
-        // If there are no
+        // If there are no templates, we show a static with the corresponding text.
         if (count($bookinginstances) == 0) {
             $mform->addElement('static', 'instancetemplateid', get_string('populatefromtemplate', 'booking'),
                     get_string('notemplateyet', 'booking'));
@@ -91,7 +91,7 @@ class mod_booking_mod_form extends moodleform_mod {
             $mform->addElement('select', 'instancetemplateid', get_string('populatefromtemplate', 'booking'),
                     $bookininstancetemplates);
         }
-        
+
         $mform->addElement('text', 'name', get_string('bookingname', 'booking'),
                 array('size' => '64'));
         if (!empty($CFG->formatstringstriptags)) {
@@ -110,6 +110,8 @@ class mod_booking_mod_form extends moodleform_mod {
             $mform->setType('eventtype', PARAM_CLEANHTML);
         }
         $mform->addRule('eventtype', null, 'required', null, 'client');
+
+        // With this checkbox the instance can be turned into an elective and show the elective tab.
 
         $this->standard_intro_elements(get_string('bookingtext', 'booking'));
 
@@ -399,7 +401,7 @@ class mod_booking_mod_form extends moodleform_mod {
         $mform->addHelpButton('addtogroup', 'addtogroup', 'booking');
 
         $opts = array(0 => get_string('unlimited', 'mod_booking'));
-        $extraopts = array_combine(range(1, 100), range(1, 100));
+        $extraopts = array_combine(range(1, 360), range(1, 360));
         $opts = $opts + $extraopts;
         $mform->addElement('select', 'maxperuser', get_string('maxperuser', 'mod_booking'), $opts);
         $mform->setDefault('maxperuser', 0);

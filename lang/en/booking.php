@@ -306,6 +306,8 @@ $string['shorturl'] = 'Short URL of this option';
 $string['generatenewurl'] = 'Generate new short url';
 $string['notes'] = 'Booking notes';
 
+$string['electivesettings'] = 'Elective Settings';
+
 $string['pollurlteachers_help'] = 'You can use any of the following placeholders in the text:
 <ul>
 <li>{status}</li>
@@ -740,6 +742,13 @@ $string['whichviewerror'] = 'You have to include the default view in: Views to s
 $string['showviews'] = 'Views to show on in the booking options overview';
 $string['enablepresence'] = 'Enable presence';
 $string['removeuseronunenrol'] = 'Remove user from booking upon unenrolment from associated course?';
+
+$string['showelective'] = 'Use instance as elective';
+$string['maxcredits'] = 'Max credits to use';
+$string['maxcredits_help'] = 'You can define the max amount of credits users can or must use when booking options. You can define in every booking option how many credits it is worth.';
+$string['unlimitedcredits'] = 'Don\'t use credits';
+$string['forceconsecutive'] = 'Enforce booking order';
+$string['forceconsecutive_help'] = 'Users will be inscribed only once they have completed the previous booking option';
 
 // editoptions.php
 $string['addeditbooking'] = 'Edit booking option';
