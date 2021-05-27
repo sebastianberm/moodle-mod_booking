@@ -185,10 +185,27 @@ class mod_booking_mod_form extends moodleform_mod {
             $alloptiontemplates);
         $mform->setDefault('templateid', 0);
 
-        // TODO: Show complete booking options decriptions or show/hide link to load dynamically.
-        // TODO: $mform->addElement('checkbox', 'showfulldescription', get_string('showfulldescription', 'booking'));
-        // TODO: $mform->setDefault('showfulldescription', 1);
-        // TODO: $mform->addHelpButton('showfulldescription', 'showfulldescription', 'booking');
+        // Elective.
+        $mform->addElement('header', 'electivesettings',
+                get_string('electivesettings', 'booking'));
+
+        $mform->addElement('checkbox', 'showelective', get_string('showelective', 'booking'));
+
+        $opts = array(0 => get_string('unlimitedcredits', 'mod_booking'));
+        $extraopts = array_combine(range(1, 50), range(1, 50));
+        $opts = $opts + $extraopts;
+        $extraopts = array_combine(range(55, 500, 5), range(55, 500, 5));
+        $opts = $opts + $extraopts;
+        $mform->addElement('select', 'maxcredits', get_string('maxcredits', 'mod_booking'), $opts);
+        $mform->setDefault('maxcredits', 1);
+        $mform->addHelpButton('maxcredits', 'maxcredits', 'mod_booking');
+
+        $mform->addElement('checkbox', 'forceconsecutive', get_string('forceconsecutive', 'booking'));
+        $mform->addHelpButton('forceconsecutive', 'forceconsecutive', 'mod_booking');
+
+        $mform->disabledIf('forceconsecutive', 'showelective', 'notchecked');
+        $mform->disabledIf('maxcredits', 'showelective', 'notchecked');
+
 
         // Confirmation message.
         $mform->addElement('header', 'confirmation',
