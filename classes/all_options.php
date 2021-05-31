@@ -493,7 +493,7 @@ class all_options extends table_sql {
 
                 // Check if already selected.
                 $url = new moodle_url('view.php', $buttonoptions);
-                if (in_array($buttonoptions['answer'], $electivesarray)) {
+                if (!in_array($buttonoptions['answer'], $electivesarray)) {
                     // Show the select button if the elective was not already selected.
                     $button = $OUTPUT->single_button($url, get_string('electiveselectbtn', 'booking'), 'get');
                 } else {
