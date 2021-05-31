@@ -73,12 +73,12 @@ if ($iselective) {
             }
             $electivesstring = rtrim($electivesstring, ',');
             set_user_preference('selected_electives', $electivesstring);
+        }
+    } else {
+        if ($electives) {
+            set_user_preference('selected_electives', $electives . ',' . $answer);
         } else {
-            if ($electives) {
-                set_user_preference('selected_electives', $electives . ',' . $answer);
-            } else {
-                set_user_preference('selected_electives', $answer);
-            }
+            set_user_preference('selected_electives', $answer);
         }
     }
 }
