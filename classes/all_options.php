@@ -481,10 +481,33 @@ class all_options extends table_sql {
                 $buttonoptions['confirm'] = 1;
             }
 
-            $url = new moodle_url('view.php', $buttonoptions);
-            $button = $OUTPUT->single_button($url,
-                (empty($values->btnbooknowname) ? get_string('booknow', 'booking') : $values->btnbooknowname),
-                'post');
+            if ($this->booking->settings->eventtype === 'elective') {
+                $buttonoptions['iselective'] = 1;
+
+                $electives = get_user_preferences('selected_electives', false);
+                if ($electives) {
+                    $electivesarray = explode(',', $electives);
+                } else {
+                    $electivesarray = [];
+                }
+
+                // Check if already selected.
+                $url = new moodle_url('view.php', $buttonoptions);
+                if (in_array($buttonoptions['answer'], $electivesarray)) {
+                    // Show the select button if the elective was not already selected.
+                    $button = $OUTPUT->single_button($url, get_string('electiveselectbtn', 'booking'), 'get');
+                } else {
+                    // Else, show a deselect button.
+                    $button = $OUTPUT->single_button($url, get_string('electivedeselectbtn', 'booking'), 'get');
+                }
+            } else {
+                // Else show the default "Book now" button.
+                $buttonoptions['iselective'] = 0;
+                $url = new moodle_url('view.php', $buttonoptions);
+                $button = $OUTPUT->single_button($url,
+                    (empty($values->btnbooknowname) ? get_string('booknow', 'booking') : $values->btnbooknowname),
+                    'post');
+            }
         }
 
         if (($values->limitanswers && ($availabibility == "full")) || ($availabibility == "closed") || !$underlimit ||

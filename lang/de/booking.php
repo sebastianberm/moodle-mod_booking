@@ -216,6 +216,8 @@ $string['edittag'] = 'Bearbeiten';
 $string['showdescription'] = 'Info anzeigen';
 $string['hidedescription'] = 'Info verstecken';
 $string['editteacherslink'] = 'Lehrer*innen bearbeiten';
+$string['electiveselectbtn'] = 'Wahlfach auswählen';
+$string['electivedeselectbtn'] = 'Wahlfach abwählen';
 
 // Mod_form.
 $string['signinlogoheader'] = 'Logo in der Kopfzeile auf der Unterschriftenliste';

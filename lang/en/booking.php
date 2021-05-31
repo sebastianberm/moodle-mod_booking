@@ -253,6 +253,8 @@ $string['tagdeleted'] = 'Tag template was deleted!';
 $string['showdescription'] = 'Show description';
 $string['hidedescription'] = 'Hide description';
 $string['editteacherslink'] = 'Edit teachers';
+$string['electiveselectbtn'] = 'Select elective';
+$string['electivedeselectbtn'] = 'Deselect elective';
 
 // mod_form
 $string['signinlogoheader'] = 'Logo in header to display on the sign-in sheet';

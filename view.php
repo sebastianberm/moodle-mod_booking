@@ -16,6 +16,8 @@
 use mod_booking\all_options;
 use mod_booking\booking;
 
+global $CFG, $DB, $OUTPUT, $PAGE, $USER;
+
 require_once("../../config.php");
 require_once("locallib.php");
 require_once($CFG->libdir . '/completionlib.php');
@@ -36,6 +38,7 @@ $searchinstitution = optional_param('searchinstitution', '', PARAM_TEXT);
 $searchname = optional_param('searchname', '', PARAM_TEXT);
 $searchsurname = optional_param('searchsurname', '', PARAM_TEXT);
 $page = optional_param('page', '0', PARAM_INT);
+$iselective = optional_param('iselective', '0', PARAM_INT);
 
 $perpage = 10;
 $conditions = array();
@@ -49,6 +52,36 @@ require_course_login($course, false, $cm);
 $context = context_module::instance($cm->id);
 
 $booking = new booking($cm->id);
+
+// Store selected electives in user preferences.
+if ($iselective) {
+    $electives = get_user_preferences('selected_electives', false);
+    if ($electives) {
+        $electivesarray = explode(',', $electives);
+    } else {
+        $electivesarray = [];
+    }
+    // Add or remove the (de)selected elective from user preferences.
+    if (in_array($answer, $electivesarray)) {
+        if (($key = array_search($answer, $electivesarray)) !== false) {
+            // Remove the elective if it was deselected.
+            unset($electivesarray[$key]);
+            // Now recreate the string and save to user prefs.
+            $electivesstring = '';
+            foreach ($electivesarray as $entry) {
+                $electivesstring .= $entry . ',';
+            }
+            $electivesstring = rtrim($electivesstring, ',');
+            set_user_preference('selected_electives', $electivesstring);
+        } else {
+            if ($electives) {
+                set_user_preference('selected_electives', $electives . ',' . $answer);
+            } else {
+                set_user_preference('selected_electives', $answer);
+            }
+        }
+    }
+}
 
 if (!empty($action)) {
     $urlparams['action'] = $action;
@@ -194,7 +227,7 @@ if ($action == 'delbooking' and confirm_sesskey() && $confirm == 1 and
 }
 
 // Before processing data user has to agree to booking policy and confirm booking.
-if ($form = data_submitted() && has_capability('mod/booking:choose', $context) && $download == '' &&
+if (!$iselective && $form = data_submitted() && has_capability('mod/booking:choose', $context) && $download == '' &&
          confirm_sesskey() && $confirm != 1 && $answer) {
     booking_confirm_booking($answer, $USER, $cm, $url);
     die();
@@ -204,7 +237,7 @@ $PAGE->set_title(format_string($booking->settings->name));
 $PAGE->set_heading(format_string($booking->settings->name));
 
 // Submit any new data if there is any.
-if ($download == '' && $form = data_submitted() && has_capability('mod/booking:choose', $context)) {
+if (!$iselective && $download == '' && $form = data_submitted() && has_capability('mod/booking:choose', $context)) {
     echo $OUTPUT->header();
     $timenow = time();
 

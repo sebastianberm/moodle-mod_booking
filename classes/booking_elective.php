@@ -16,6 +16,7 @@
 namespace mod_booking;
 use mod_booking\booking_utils;
 defined('MOODLE_INTERNAL') || die();
+global $CFG;
 require_once($CFG->dirroot.'/calendar/lib.php');
 
 /**
