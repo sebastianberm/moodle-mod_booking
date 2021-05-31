@@ -53,11 +53,24 @@ $context = context_module::instance($cm->id);
 
 $booking = new booking($cm->id);
 
+// Use set_user_preference('selected_electives', ''); to reset the selected electives.
+//set_user_preference('selected_electives', '');
+
 // Store selected electives in user preferences.
 if ($iselective) {
-    $electives = get_user_preferences('selected_electives', false);
-    if ($electives) {
-        $electivesarray = explode(',', $electives);
+    $encodedobjectsarray = null;
+    $electivespref = get_user_preferences('selected_electives', '');
+    if ($electivespref !== '') {
+        $electivesobject = null;
+        $encodedobjectsarray = explode('#', $electivespref);
+        foreach ($encodedobjectsarray as $encodedobject) {
+            $record = json_decode($encodedobject);
+            if ($record->instance == $cm->id) {
+                $electivesobject = $record;
+                $electivesarray = $record->selected;
+                break;
+            }
+         }
     } else {
         $electivesarray = [];
     }
@@ -66,21 +79,55 @@ if ($iselective) {
         if (($key = array_search($answer, $electivesarray)) !== false) {
             // Remove the elective if it was deselected.
             unset($electivesarray[$key]);
-            // Now recreate the string and save to user prefs.
-            $electivesstring = '';
-            foreach ($electivesarray as $entry) {
-                $electivesstring .= $entry . ',';
+            // Update the object.
+            $electivesobject->selected = $electivesarray;
+
+            $encodedstringsarray = [];
+            foreach ($encodedobjectsarray as $encodedobject) {
+                $record = json_decode($encodedobject);
+                // Replace the updated object.
+                if ($record->instance == $electivesobject->instance) {
+                    $record = $electivesobject;
+                    array_push($encodedstringsarray, json_encode($record));
+                } else {
+                    array_push($encodedstringsarray, $encodedobject);
+                }
             }
-            $electivesstring = rtrim($electivesstring, ',');
-            set_user_preference('selected_electives', $electivesstring);
+            // Now recreate the string and save to user prefs.
+            set_user_preference('selected_electives', implode('#', $encodedstringsarray));
         }
     } else {
-        if ($electives) {
-            set_user_preference('selected_electives', $electives . ',' . $answer);
+        if ($electivesobject) {
+            $selectedarray = (array) $electivesobject->selected;
+            array_push($selectedarray, $answer);
+            $electivesobject->selected = $selectedarray;
+
+            $encodedstringsarray = [];
+            foreach ($encodedobjectsarray as $encodedobject) {
+                $record = json_decode($encodedobject);
+                // Replace the updated object.
+                if ($record->instance == $electivesobject->instance) {
+                    $record = $electivesobject;
+                    array_push($encodedstringsarray, json_encode($record));
+                } else {
+                    array_push($encodedstringsarray, $encodedobject);
+                }
+            }
+            // Now recreate the string and save to user prefs.
+            set_user_preference('selected_electives', implode('#', $encodedstringsarray));
         } else {
-            set_user_preference('selected_electives', $answer);
+            $electivesobject = new stdClass();
+            $electivesobject->instance = $cm->id;
+            $electivesobject->selected = [];
+            array_push($electivesobject->selected, $answer);
+            if ($electivespref !== '') {
+                set_user_preference('selected_electives', $electivespref . '#' . json_encode($electivesobject));
+            } else {
+                set_user_preference('selected_electives', json_encode($electivesobject));
+            }
         }
     }
+    // TODO set $whichview and switch to currently active tab
 }
 
 if (!empty($action)) {
@@ -387,6 +434,9 @@ if (!$current and $bookingopen and has_capability('mod/booking:choose', $context
             echo html_writer::tag('span', $booking->settings->organizatorname);
             echo html_writer::end_tag('div');
         }
+
+        // Only for Debugging. TODO: delete this
+        echo html_writer::tag('pre', get_user_preferences('selected_electives'));
 
         $out = array();
         $fs = get_file_storage();

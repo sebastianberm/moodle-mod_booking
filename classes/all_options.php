@@ -483,10 +483,18 @@ class all_options extends table_sql {
 
             if ($this->booking->settings->eventtype === 'elective') {
                 $buttonoptions['iselective'] = 1;
+                $buttonoptions['whichview'] = $_GET['whichview'];
 
-                $electives = get_user_preferences('selected_electives', false);
-                if ($electives) {
-                    $electivesarray = explode(',', $electives);
+                $electivespref = get_user_preferences('selected_electives', '');
+                if ($electivespref !== '') {
+                    $encodedobjectsarray = explode('#', $electivespref);
+                    foreach ($encodedobjectsarray as $encodedobject) {
+                        $record = json_decode($encodedobject);
+                        if ($record->instance == $this->cm->id) {
+                            $electivesarray = (array) $record->selected;
+                            break;
+                        }
+                    }
                 } else {
                     $electivesarray = [];
                 }
