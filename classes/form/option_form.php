@@ -18,6 +18,7 @@ namespace mod_booking\form;
 use mod_booking\utils\wb_payment;
 use moodleform;
 use mod_booking\booking;
+use mod_booking\booking_elective;
 use mod_booking\booking_option;
 
 defined('MOODLE_INTERNAL') || die();
@@ -215,6 +216,41 @@ class option_form extends moodleform {
                 get_string('bookingattachment', 'booking'), null,
                 array('subdirs' => 0, 'maxbytes' => $CFG->maxbytes, 'maxfiles' => 50,
                                 'accepted_types' => array('*')));
+
+        // Elective
+
+        $mform->addElement('header', 'electiveoptions', get_string('electivesettings', 'booking'));
+
+        $opts = array_combine(range(0, 50), range(0, 50));
+        $extraopts = array_combine(range(55, 500, 5), range(55, 500, 5));
+        $opts = $opts + $extraopts;
+        $mform->addElement('select', 'credits', get_string('credits', 'mod_booking'), $opts);
+        $mform->addHelpButton('credits', 'credits', 'mod_booking');
+
+        $options = array(
+                'multiple' => true,
+                'noselectionstring' => get_string('nooptionselected', 'booking'),
+        );
+
+        // Retrieve all the other Booking options.
+        $alloptions = $DB->get_records('booking_options', array('bookingid' => $booking->id));
+        $optionsarray = [];
+
+        $optionid = $this->_customdata['optionid'];
+
+        foreach($alloptions as $key => $optionobject) {
+            // Do not show self.
+            $data = $this->_customdata;
+            if ($optionid == $key) {
+                continue;
+            }
+            $optionsarray[$key] = $optionobject->text;
+        }
+
+        $mform->addElement('autocomplete', 'mustcombine', get_string("mustcombine", "booking"), $optionsarray, $options);
+        $mform->addHelpButton('mustcombine', 'mustcombine', 'mod_booking');
+        $mform->addElement('autocomplete', 'mustnotcombine', get_string("mustnotcombine", "booking"), $optionsarray, $options);
+        $mform->addHelpButton('mustnotcombine', 'mustnotcombine', 'mod_booking');
 
         // Advanced options.
         $mform->addElement('header', 'advancedoptions', get_string('advancedoptions', 'booking'));
@@ -433,7 +469,7 @@ class option_form extends moodleform {
             $this->_customdata['optionid'], array('subdirs' => false, 'maxfiles' => 50, 'accepted_types' => array('*'), 'maxbytes' => 0));
         $defaultvalues->myfilemanageroption = $draftitemid;
 
-        if ($defaultvalues->optionid > 0) {
+        if (isset($defaultvalues->optionid) && $defaultvalues->optionid > 0) {
             // Defaults for customfields.
             $cfdefaults = $DB->get_records('booking_customfields', array('optionid' => $defaultvalues->optionid));
             if (!empty($cfdefaults)) {

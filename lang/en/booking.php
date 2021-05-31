@@ -749,6 +749,16 @@ $string['maxcredits_help'] = 'You can define the max amount of credits users can
 $string['unlimitedcredits'] = 'Don\'t use credits';
 $string['forceconsecutive'] = 'Enforce booking order';
 $string['forceconsecutive_help'] = 'Users will be inscribed only once they have completed the previous booking option';
+$string['useallcredits'] = 'All credits have to be consumed at once';
+$string['useallcredits_help'] = 'Uses can only book once, and they have to book all options in one step.';
+$string['credits'] = 'Credits';
+$string['credits_help'] = 'The number of credits which will be used by booking this option.';
+$string['mustcombine'] = 'Necessary booking options';
+$string['mustcombine_help'] = 'Booking options which have to be combined with this option';
+$string['mustnotcombine'] = 'Excluded booking options';
+$string['mustnotcombine_help'] = 'Booking options which can\'t be  combined with this option';
+$string['nooptionselected'] = 'No booking option selected';
+$string['creditsleft'] = '{$a->credits} of {$a->maxcredits} credits left';
 
 // editoptions.php
 $string['addeditbooking'] = 'Edit booking option';

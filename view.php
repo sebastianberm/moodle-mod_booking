@@ -434,7 +434,12 @@ if (!$current and $bookingopen and has_capability('mod/booking:choose', $context
             }
         }
 
-        echo $OUTPUT->box($booking->show_maxperuser($USER), 'mdl-align');
+        if (!\mod_booking\booking_elective::is_elective($booking)) {
+            echo $OUTPUT->box($booking->show_maxperuser($USER), 'mdl-align');
+        } else {
+            $message = \mod_booking\booking_elective::show_credits_message($booking, $optionid);
+            echo $OUTPUT->box($message, 'mdl-align');
+        }
 
         $output = $PAGE->get_renderer('mod_booking');
         $output->print_booking_tabs($urlparams, $whichview, $mybookings->mybookings,

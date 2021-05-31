@@ -589,6 +589,16 @@ $string['maxcredits_help'] = 'Sie können die maximal in dieser Buchung verfügb
 $string['unlimitedcredits'] = 'Verwende keine Credits';
 $string['forceconsecutive'] = 'Erzwinge Reihenfolge';
 $string['forceconsecutive_help'] = 'NutzerInnen werden erst nach Abschluss des vorangegangene Kurses in den nächsten Kurs eingeschrieben.';
+$string['useallcredits'] = 'Alle Credits müssen in einer Buchung verbraucht werden';
+$string['useallcredits_help'] = 'Die NutzerInnen haben nur einen einzigen Buchungsschritt, bei dem alle Wahlfächer gebucht werden müssen.';
+$string['credits'] = 'Credits';
+$string['credits_help'] = 'Wie viele credits werden bei der Buchung dieser Option verbraucht';
+$string['mustcombine'] = 'Notwendige Buchungsoptionen';
+$string['mustcombine_help'] = 'Buchungsoptionen mit denen diese Buchungsoption kombiniert werden muss';
+$string['mustnotcombine'] = 'Ausgeschlossene Buchungsoptionen';
+$string['mustnotcombine_help'] = 'Buchungsoptionen mit denen diese Buchungsoption nicht kombiniert werden kann';
+$string['nooptionselected'] = 'Keine Buchungsoption ausgewählt';
+$string['creditsleft'] = 'Du hast noch {$a->credits} von {$a->maxredits} Credits';
 
 // Importoptions.php.
 $string['csvfile'] = 'CSV Datei';
