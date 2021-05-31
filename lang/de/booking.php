@@ -212,6 +212,11 @@ $string['wrongdataallfields'] = 'Bitte alle Felder ausfüllen!';
 $string['tagsuccessfullysaved'] = 'Schlagwort erfolgreich gespeichert.';
 $string['edittag'] = 'Bearbeiten';
 
+// All_options.php
+$string['showdescription'] = 'Info anzeigen';
+$string['hidedescription'] = 'Info verstecken';
+$string['editteacherslink'] = 'Lehrer*innen bearbeiten';
+
 // Mod_form.
 $string['signinlogoheader'] = 'Logo in der Kopfzeile auf der Unterschriftenliste';
 $string['signinlogofooter'] = 'Logo in der Fußzeile auf der Unterschriftenliste';

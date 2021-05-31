@@ -249,7 +249,7 @@ $string['tagsuccessfullysaved'] = 'Tag was saved.';
 $string['edittag'] = 'Edit';
 $string['tagdeleted'] = 'Tag template was deleted!';
 
-// mod_booking\all_options
+// All_options.php
 $string['showdescription'] = 'Show description';
 $string['hidedescription'] = 'Hide description';
 $string['editteacherslink'] = 'Edit teachers';

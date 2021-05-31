@@ -52,7 +52,7 @@ class backup_booking_activity_structure_step extends backup_activity_structure_s
                     'responsesfields', 'reportfields', 'beforebookedtext', 'beforecompletedtext',
                     'aftercompletedtext', 'signinsheetfields', 'comments', 'ratings', 'removeuseronunenrol',
                     'teacherroleid', 'allowupdatedays', 'templateid', 'defaultoptionsort', 'showviews', 'customtemplateid',
-                    'autcractive', 'autcrprofile', 'autcrvalue', 'autcrtemplate'));
+                    'autcractive', 'autcrprofile', 'autcrvalue', 'autcrtemplate', 'consecutive'));
 
         $options = new backup_nested_element('options');
         $option = new backup_nested_element('option', array('id'),
@@ -63,7 +63,7 @@ class backup_booking_activity_structure_step extends backup_activity_structure_s
                     'pollurlteachers', 'howmanyusers', 'pollsend', 'removeafterminutes',
                     'notificationtext', 'notificationtextformat', 'disablebookingusers',
                     'beforebookedtext', 'beforecompletedtext',
-                    'aftercompletedtext', 'shorturl', 'duration', 'parentid'));
+                    'aftercompletedtext', 'shorturl', 'duration', 'parentid', 'credits'));
 
         $answers = new backup_nested_element('answers');
         $answer = new backup_nested_element('answer', array('id'),
@@ -98,6 +98,10 @@ class backup_booking_activity_structure_step extends backup_activity_structure_s
         $customfield = new backup_nested_element('customfield', array('id'),
                 array('bookingid', 'optionid', 'optiondateid', 'cfgname', 'value'));
 
+        $combinations = new backup_nested_element('combinations');
+        $combination = new backup_nested_element('combination', array('id'),
+            array('optionid', 'otheroptionid', 'othercourseid', 'cancombine'));
+
         // Build the tree.
         $booking->add_child($options);
         $options->add_child($option);
@@ -126,6 +130,9 @@ class backup_booking_activity_structure_step extends backup_activity_structure_s
         $booking->add_child($customfields);
         $customfields->add_child($customfield);
 
+        $booking->add_child($combinations);
+        $combinations->add_child($combination);
+
         // Define sources.
         $booking->set_source_table('booking', array('id' => backup::VAR_ACTIVITYID));
 
@@ -137,6 +144,7 @@ class backup_booking_activity_structure_step extends backup_activity_structure_s
         $other->set_source_table('booking_other', array('optionid' => backup::VAR_PARENTID));
         $optiondate->set_source_table('booking_optiondates', array('bookingid' => backup::VAR_PARENTID));
         $customfield->set_source_table('booking_customfields', array('bookingid' => backup::VAR_PARENTID));
+        $combination->set_source_table('booking_combinations', array('bookingid' => backup::VAR_PARENTID));
 
         // All the rest of elements only happen if we are including user info.
         if ($userinfo) {

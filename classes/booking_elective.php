@@ -104,9 +104,6 @@ class booking_elective {
         return false;
     }
 
-    /**
-     *
-     */
     public static function show_credits_message($booking) {
         global $USER;
 

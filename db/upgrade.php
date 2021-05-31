@@ -2090,7 +2090,7 @@ function xmldb_booking_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2021051901, 'booking');
     }
 
-    if ($oldversion < 2021052701) {
+    if ($oldversion < 2021053102) {
         // Add field consecutive to instance.
         $table = new xmldb_table('booking');
         $field = new xmldb_field('consecutive', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
@@ -2128,7 +2128,7 @@ function xmldb_booking_upgrade($oldversion) {
 
 
         // Booking savepoint reached.
-        upgrade_mod_savepoint(true, 2021052701, 'booking');
+        upgrade_mod_savepoint(true, 2021053102, 'booking');
     }
 
     return true;

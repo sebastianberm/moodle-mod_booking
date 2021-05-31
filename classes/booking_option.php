@@ -87,19 +87,19 @@ class booking_option {
     /** @var array $sessions array of objects containing coursestarttime and courseendtime as object values */
     public $sessions = array();
 
-    /** @var boolean if I'm booked*/
+    /** @var boolean if I'm booked */
     public $iambooked = 0;
 
-    /** @var boolean if I'm on waiting list*/
+    /** @var boolean if I'm on waiting list */
     public $onwaitinglist = 0;
 
-    /** @var boolean if I completed?*/
+    /** @var boolean if I completed? */
     public $completed = 0;
 
-    /** @var int user on waiting list*/
+    /** @var int user on waiting list */
     public $waiting = 0;
 
-    /** @var int booked users*/
+    /** @var int booked users */
     public $booked = 0;
 
     /**

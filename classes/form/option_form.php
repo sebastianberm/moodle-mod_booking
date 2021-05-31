@@ -217,7 +217,7 @@ class option_form extends moodleform {
                 array('subdirs' => 0, 'maxbytes' => $CFG->maxbytes, 'maxfiles' => 50,
                                 'accepted_types' => array('*')));
 
-        // Elective
+        // Elective.
 
         $mform->addElement('header', 'electiveoptions', get_string('electivesettings', 'booking'));
 
