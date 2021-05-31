@@ -53,8 +53,7 @@ $context = context_module::instance($cm->id);
 
 $booking = new booking($cm->id);
 
-// Use set_user_preference('selected_electives', ''); to reset the selected electives.
-//set_user_preference('selected_electives', '');
+// Debugging: Use set_user_preference('selected_electives', ''); to reset the selected electives.
 
 // Store selected electives in user preferences.
 if ($iselective) {
@@ -67,7 +66,7 @@ if ($iselective) {
             $record = json_decode($encodedobject);
             if ($record->instance == $cm->id) {
                 $electivesobject = $record;
-                $electivesarray = $record->selected;
+                $electivesarray = (array) $record->selected;
                 break;
             }
          }
