@@ -226,4 +226,24 @@ class booking_elective {
         // Now recreate the string and save to user prefs.
         set_user_preference('selected_electives', $jsonstring);
     }
+
+
+    /**
+     * Function to set back the selected items in the user prefs.
+     * @param $cmid
+     * @throws \coding_exception
+     */
+    public static function reset_electivesarray_in_user_prefs($cmid) {
+        $electivespref = get_user_preferences('selected_electives', '');
+
+        if ($electivespref && $electivespref != '') {
+            $dataobject = json_decode($electivespref);
+            if ($dataobject && isset($dataobject->$cmid)) {
+                $dataobject->$cmid = [];
+                $jsonstring = json_encode($dataobject);
+                // Now recreate the string and save to user prefs.
+                set_user_preference('selected_electives', $jsonstring);
+            }
+        }
+    }
 }
