@@ -43,6 +43,7 @@ $string['attachicalsess'] = 'Attach all session dates as iCal events';
 $string['attachicalsessdesc'] = 'Email notifications will include all session dates defined for a booking option as iCal attachment.';
 $string['icalcancel'] = 'Include iCal event when booking is cancelled as cancelled event';
 $string['icalcanceldesc'] = 'When a users cancels a booking or is removed from the booked users list, then attach an iCal attachment as cancelled event.';
+$string['bookelectivesbtn'] = 'Book selected electives';
 $string['booking'] = 'Booking';
 $string['booking:addinstance'] = 'Add new booking';
 $string['booking:choose'] = 'Book';

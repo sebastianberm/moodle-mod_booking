@@ -329,7 +329,7 @@ if (!$current and $bookingopen and has_capability('mod/booking:choose', $context
     } else {
         $tablealloptions->is_downloadable(false);
     }
-    $tablealloptions->show_download_buttons_at(array(TABLE_P_BOTTOM));
+    $tablealloptions->show_download_buttons_at(array(TABLE_P_TOP));
 
     $columns = array();
     $headers = array();
@@ -852,9 +852,12 @@ if (!$current and $bookingopen and has_capability('mod/booking:choose', $context
     echo $OUTPUT->error_text(get_string("norighttobook", "booking"));
     // echo $OUTPUT->continue_button(new moodle_url('/course/view.php', array('id' => $course->id)));
 }
+
 // TODO: Add new "Book all selected options" button.
-
-
+$buttonoptions = array('id' => $cm->id, 'action' => 'multibooking', 'sesskey' => $USER->sesskey);
+$url = new moodle_url('view.php', $buttonoptions);
+echo $OUTPUT->single_button($url, get_string('bookelectivesbtn', 'booking'), 'post');
+// TODO: Button does not yet work correctly - implement multibooking logic.
 
 echo $OUTPUT->box('<a href="http://www.wunderbyte.at">' . get_string('createdby', 'booking') . "</a>",
         'box mdl-align');
