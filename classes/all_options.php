@@ -482,7 +482,6 @@ class all_options extends table_sql {
             }
 
             if ($this->booking->settings->eventtype === 'elective') {
-                $buttonoptions['iselective'] = 1;
                 $buttonoptions['whichview'] = $_GET['whichview'];
 
                 $electivesarray = booking_elective::get_electivesarray_from_user_prefs($this->cm->id);
@@ -498,7 +497,6 @@ class all_options extends table_sql {
                 }
             } else {
                 // Else show the default "Book now" button.
-                $buttonoptions['iselective'] = 0;
                 $url = new moodle_url('view.php', $buttonoptions);
                 $button = $OUTPUT->single_button($url,
                     (empty($values->btnbooknowname) ? get_string('booknow', 'booking') : $values->btnbooknowname),

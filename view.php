@@ -16,6 +16,7 @@
 use mod_booking\all_options;
 use mod_booking\booking;
 use mod_booking\booking_elective;
+use mod_booking\booking_option;
 
 global $CFG, $DB, $OUTPUT, $PAGE, $USER;
 
@@ -39,7 +40,7 @@ $searchinstitution = optional_param('searchinstitution', '', PARAM_TEXT);
 $searchname = optional_param('searchname', '', PARAM_TEXT);
 $searchsurname = optional_param('searchsurname', '', PARAM_TEXT);
 $page = optional_param('page', '0', PARAM_INT);
-$iselective = optional_param('iselective', '0', PARAM_INT);
+$done = optional_param('done', '0', PARAM_INT);
 
 $perpage = 10;
 $conditions = array();
@@ -54,16 +55,16 @@ $context = context_module::instance($cm->id);
 
 $booking = new booking($cm->id);
 
+$iselective = $booking->settings->eventtype;
+
 // Debugging: Use set_user_preference('selected_electives', ''); to reset the selected electives.
+//set_user_preference('selected_electives', '');
 
 // Store selected electives in user preferences.
 if ($iselective) {
-
     $updateobject = new stdClass();
-
     $updateobject->instanceid = $cm->id;
     $updateobject->optionid = $answer;
-
     booking_elective::set_electivesarray_to_user_prefs($updateobject);
 }
 
@@ -162,7 +163,7 @@ $strbookings = get_string('modulenameplural', 'booking');
 if ($action == 'delbooking' and confirm_sesskey() && $confirm == 1 and
          has_capability('mod/booking:choose', $context) and
          ($booking->settings->allowupdate or has_capability('mod/booking:deleteresponses', $context))) {
-    $bookingdata = new \mod_booking\booking_option($cm->id, $optionid);
+    $bookingdata = new booking_option($cm->id, $optionid);
     $bookingdata->apply_tags();
 
     if ($bookingdata->user_delete_response($USER->id)) {
@@ -189,7 +190,7 @@ if ($action == 'delbooking' and confirm_sesskey() && $confirm == 1 and
          ($booking->settings->allowupdate or has_capability('mod/booking:deleteresponses', $context))) {
     echo $OUTPUT->header();
 
-    $bookingdata = new \mod_booking\booking_option($cm->id, $optionid);
+    $bookingdata = new booking_option($cm->id, $optionid);
     $bookingdata->apply_tags();
 
     $options = array('id' => $cm->id, 'action' => 'delbooking', 'confirm' => 1,
@@ -228,7 +229,7 @@ if (!$iselective && $download == '' && $form = data_submitted() && has_capabilit
     $url = new moodle_url("view.php", array('id' => $cm->id));
     $url->set_anchor("option" . $answer);
     if (!empty($answer)) {
-        $bookingdata = new \mod_booking\booking_option($cm->id, $answer, array(), 0, 0, false);
+        $bookingdata = new booking_option($cm->id, $answer, array(), 0, 0, false);
         $bookingdata->apply_tags();
         if ($bookingdata->user_submit_response($USER)) {
             $contents = html_writer::tag('p', get_string('bookingsaved', 'booking'));
@@ -255,37 +256,56 @@ if (!$iselective && $download == '' && $form = data_submitted() && has_capabilit
         echo $OUTPUT->footer();
         die();
     }
-} else if ($iselective && $download == '' && $form = data_submitted() && has_capability('mod/booking:choose', $context)) {
+} else if ($iselective  && !$done && $download == '' && $form = data_submitted() && has_capability('mod/booking:choose', $context)) {
     // Button to "book all selected electives" has been pressed
     echo $OUTPUT->header();
     $timenow = time();
 
-    $url = new moodle_url("view.php", array('id' => $cm->id));
     //$url->set_anchor("option" . $answer);
-    $electivesarray = get_electivesarray_from_user_prefs($cm->id);
+    $electivesarray = booking_elective::get_electivesarray_from_user_prefs($cm->id);
 
-    if (!empty($answer)) {
-        $bookingdata = new \mod_booking\booking_option($cm->id, $answer, array(), 0, 0, false);
-        $bookingdata->apply_tags();
-        if ($bookingdata->user_submit_response($USER)) {
-            $contents = html_writer::tag('p', get_string('bookingsaved', 'booking'));
-            if ($booking->settings->sendmail) {
-                $contents .= html_writer::tag('p', get_string('mailconfirmationsent', 'booking') . ".");
+    if ( count($electivesarray) == 1 && $electivesarray[0] == '') {
+        array_pop($electivesarray);
+    }
+
+    $success = true;
+    if (!empty($electivesarray)) { //  && !
+        foreach ($electivesarray as $answer) {
+            if (!empty($answer)) {
+                // Now submit a response for every selected elective.
+                $bookingdata = new booking_option($cm->id, (int)$answer, array(), 0, 0, false);
+                $bookingdata->apply_tags();
+
+                if (!$bookingdata->user_submit_response($USER)) {
+                    $success = false;
+                }
             }
-            $contents .= $OUTPUT->single_button($url,
-                get_string('continue'), 'get');
-            echo $OUTPUT->box($contents, 'box generalbox', 'notice');
-            echo $OUTPUT->footer();
-            die();
-        } else if (is_numeric($answer)) {
-            $contents = get_string('bookingmeanwhilefull', 'booking') . " " . format_string($bookingdata->option->text);
-            $contents .= $OUTPUT->single_button($url,
-                get_string('continue'), 'get');
-            echo $OUTPUT->box($contents, 'box generalbox', 'notice');
-            echo $OUTPUT->footer();
-            die();
         }
+        booking_elective::reset_electivesarray_in_user_prefs($cm->id);
+
+        $urlparameters['id'] = $cm->id;
+        $urlparameters['done'] = 1;
+        $url = new moodle_url("view.php", $urlparameters);
+
+        if ($success) {
+            $contents = html_writer::tag('p', 'TODO: successtext');
+            $contents .= $OUTPUT->single_button($url,
+                get_string('continue'), 'get');
+            echo $OUTPUT->box($contents, 'box generalbox', 'notice');
+        } else {
+            $contents = html_writer::tag('p', 'TODO: errortext');
+            $contents .= $OUTPUT->single_button($url,
+                get_string('continue'), 'get');
+            echo $OUTPUT->box($contents, 'box generalbox', 'notice');
+        }
+        echo $OUTPUT->footer();
+        die();
     } else {
+        booking_elective::reset_electivesarray_in_user_prefs($cm->id);
+        $urlparameters['id'] = $cm->id;
+        $urlparameters['done'] = 1;
+        $url = new moodle_url("view.php", $urlparameters);
+
         $contents = get_string('nobookingselected', 'booking');
         $contents .= $OUTPUT->single_button($url, get_string('continue'));
         echo $OUTPUT->box($contents, 'box generalbox', 'notice');
@@ -300,7 +320,6 @@ $event->add_record_snapshot('course', $PAGE->course);
 $event->trigger();
 
 // Display the booking and possibly results.
-
 $mybookings = $DB->get_record_sql(
         "SELECT COUNT(*) AS mybookings FROM {booking_answers} WHERE userid = :userid AND bookingid = :bookingid",
         array('userid' => $USER->id, 'bookingid' => $booking->id));
