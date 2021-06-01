@@ -205,25 +205,24 @@ class booking_elective {
      * @param stdClass the updated object (with instance id and updated electives array in "selected")
      */
     public static function set_electivesarray_to_user_prefs(stdClass $updatedobject) {
-
-        // set_user_preference('selected_electives', '');
+        
         $jsonstring = get_user_preferences('selected_electives', '');
-
         $electivespref = json_decode($jsonstring);
-
         $instanceid = $updatedobject->instanceid;
-
         if (!isset($electivespref->$instanceid)
         || !in_array($updatedobject->optionid, $electivespref->$instanceid)) {
+            if (!$electivespref) {
+                $electivespref = new stdClass();
+            }
             $electivespref->$instanceid[] = $updatedobject->optionid;
         } else {
             // Delete the value.
-            $key = array_search($updatedobject->optionid, $electivespref->$instanceid);
-            unset($electivespref->$instanceid[$key]);
+            $arrayofids = (array)$electivespref->$instanceid;
+            $key = array_search($updatedobject->optionid, $arrayofids);
+            array_splice($arrayofids, $key, 1);
+            $electivespref->$instanceid = $arrayofids;
         }
-
         $jsonstring = json_encode($electivespref);
-
         // Now recreate the string and save to user prefs.
         set_user_preference('selected_electives', $jsonstring);
     }
