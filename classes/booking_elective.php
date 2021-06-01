@@ -128,27 +128,27 @@ class booking_elective {
 
         $outdata = new stdClass();
         $outdata->maxcredits = $booking->settings->maxperuser;
-        $outdata->credits = booking_elective::return_credits($booking, $USER);
-        //$outdata->eventtype = $booking->settings->eventtype;
+        $outdata->credits = booking_elective::return_credits($booking);
         $warning .= \html_writer::tag('div', get_string('creditsleft', 'mod_booking', $outdata), array ('class' => 'alert alert-warning'));
         return $warning;
     }
-
 
     /**
      * @param $optionid
      * @return array
      * @throws \dml_exception
      */
-    public static function return_credits($booking, $USER) {
+    public static function return_credits($booking) {
 
-        global $DB;
+        global $DB, $USER;
 
-        $sql = "SELECT bo.credits
+        $sql = "SELECT bo.id, bo.credits
         FROM {booking_answers} ba
         INNER JOIN {booking_options} bo
         ON ba.optionid = bo.id
-        WHERE userid = 3";
+        WHERE ba.userid = $USER->id
+        AND bo.bookingid = $booking->id"
+        ;
 
         $data = $DB->get_records_sql($sql);
         $credits = 0;

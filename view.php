@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+use core\output\notification;
 use mod_booking\all_options;
 use mod_booking\booking;
 use mod_booking\booking_elective;
@@ -55,7 +56,7 @@ $context = context_module::instance($cm->id);
 
 $booking = new booking($cm->id);
 
-$iselective = $booking->settings->eventtype;
+$iselective = booking_elective::is_elective($booking);
 
 // Debugging: Use set_user_preference('selected_electives', ''); to reset the selected electives.
 //set_user_preference('selected_electives', '');
@@ -258,10 +259,7 @@ if (!$iselective && $download == '' && $form = data_submitted() && has_capabilit
     }
 } else if ($iselective  && !$done && $download == '' && $form = data_submitted() && has_capability('mod/booking:choose', $context)) {
     // Button to "book all selected electives" has been pressed
-    echo $OUTPUT->header();
-    $timenow = time();
 
-    //$url->set_anchor("option" . $answer);
     $electivesarray = booking_elective::get_electivesarray_from_user_prefs($cm->id);
 
     if ( count($electivesarray) == 1 && $electivesarray[0] == '') {
@@ -288,28 +286,17 @@ if (!$iselective && $download == '' && $form = data_submitted() && has_capabilit
         $url = new moodle_url("view.php", $urlparameters);
 
         if ($success) {
-            $contents = html_writer::tag('p', 'TODO: successtext');
-            $contents .= $OUTPUT->single_button($url,
-                get_string('continue'), 'get');
-            echo $OUTPUT->box($contents, 'box generalbox', 'notice');
+            redirect($url, get_string('electivesbookedsuccess', 'booking'), null, notification::NOTIFY_SUCCESS);
         } else {
-            $contents = html_writer::tag('p', 'TODO: errortext');
-            $contents .= $OUTPUT->single_button($url,
-                get_string('continue'), 'get');
-            echo $OUTPUT->box($contents, 'box generalbox', 'notice');
+            redirect($url, get_string('errormultibooking', 'booking'), null, notification::NOTIFY_ERROR);
         }
-        echo $OUTPUT->footer();
         die();
     } else {
         booking_elective::reset_electivesarray_in_user_prefs($cm->id);
         $urlparameters['id'] = $cm->id;
         $urlparameters['done'] = 1;
         $url = new moodle_url("view.php", $urlparameters);
-
-        $contents = get_string('nobookingselected', 'booking');
-        $contents .= $OUTPUT->single_button($url, get_string('continue'));
-        echo $OUTPUT->box($contents, 'box generalbox', 'notice');
-        echo $OUTPUT->footer();
+        redirect($url, get_string('nobookingselected', 'booking'), null, notification::NOTIFY_WARNING);
         die();
     }
 }
@@ -429,7 +416,7 @@ if (!$current and $bookingopen and has_capability('mod/booking:choose', $context
         }
 
         // Only for Debugging. TODO: delete this
-        echo html_writer::tag('pre', get_user_preferences('selected_electives'));
+        // echo html_writer::tag('pre', get_user_preferences('selected_electives'));
 
         $out = array();
         $fs = get_file_storage();
@@ -510,7 +497,7 @@ if (!$current and $bookingopen and has_capability('mod/booking:choose', $context
             }
         }
 
-        if (!booking_elective::is_elective($booking)) {
+        if (!$iselective) {
             echo $OUTPUT->box($booking->show_maxperuser($USER), 'mdl-align');
         } else {
             $message = booking_elective::show_credits_message($booking, $optionid);
@@ -925,7 +912,9 @@ if (!$current and $bookingopen and has_capability('mod/booking:choose', $context
 // TODO: Add new "Book all selected options" button.
 $buttonoptions = array('id' => $cm->id, 'action' => 'multibooking', 'sesskey' => $USER->sesskey);
 $url = new moodle_url('view.php', $buttonoptions);
+
 echo $OUTPUT->single_button($url, get_string('bookelectivesbtn', 'booking'), 'post');
+// echo html_writer::link($url, get_string('bookelectivesbtn', 'booking'), ['method' => 'post', 'class' => 'btn btn-primary']);
 // TODO: Button does not yet work correctly - implement multibooking logic.
 
 echo $OUTPUT->box('<a href="http://www.wunderbyte.at">' . get_string('createdby', 'booking') . "</a>",

@@ -483,6 +483,7 @@ class all_options extends table_sql {
 
             if ($this->booking->settings->eventtype === 'elective') {
                 $buttonoptions['whichview'] = $_GET['whichview'];
+                $buttonoptions['optionid'] = $values->id;
 
                 $electivesarray = booking_elective::get_electivesarray_from_user_prefs($this->cm->id);
 
@@ -490,10 +491,10 @@ class all_options extends table_sql {
                 $url = new moodle_url('view.php', $buttonoptions);
                 if (!in_array($buttonoptions['answer'], $electivesarray)) {
                     // Show the select button if the elective was not already selected.
-                    $button = $OUTPUT->single_button($url, get_string('electiveselectbtn', 'booking'), 'get');
+                    $button = html_writer::link($url, get_string('electiveselectbtn', 'booking'), ['class' => 'btn btn-secondary']);
                 } else {
                     // Else, show a deselect button.
-                    $button = $OUTPUT->single_button($url, get_string('electivedeselectbtn', 'booking'), 'get');
+                    $button = html_writer::link($url, get_string('electivedeselectbtn', 'booking'), ['class' => 'btn btn-danger']);
                 }
             } else {
                 // Else show the default "Book now" button.

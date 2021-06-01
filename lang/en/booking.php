@@ -17,21 +17,21 @@
 // general strings
 $string['messageprovider:bookingconfirmation'] = "Booking confirmations";
 
-// index.php
+// Index.php.
 $string['week'] = "Week";
 $string['question'] = "Question";
 $string['answer'] = "Answer";
 $string['topic'] = "Topic";
 
-// teacher_added.php
+// Teacher_added.php.
 $string['eventteacher_added'] = 'Teacher added';
 $string['eventteacher_removed'] = 'Teacher removed';
 
-// renderer.php
+// Renderer.php.
 $string['showonlymyinstitutions'] = "My institution";
 $string['addusertogroup'] = 'Add user to group: ';
 
-// view.php
+// View.php.
 $string['addmorebookings'] = 'Add more bookings';
 $string['addmorebookings'] = 'Add more bookings';
 $string['allowupdate'] = 'Allow booking to be updated';
@@ -70,6 +70,8 @@ $string['bookingtext'] = 'Booking text';
 $string['datenotset'] = 'Date not set';
 $string['daystonotify'] = 'Number of days in advance of the event-start to notify participatants';
 $string['daystonotify2'] = 'Second notification before start of event to notify participatants.';
+$string['electivesbookedsuccess'] = 'Your selected electives have been booked successfully.';
+$string['errormultibooking'] = 'There was an ERROR when booking the electives.';
 $string['eventbooking_cancelled'] = 'Booking cancelled';
 $string['eventbookingoption_booked'] = 'Booking option booked';
 $string['bookingoption_created'] = 'Booking option created';

@@ -55,6 +55,8 @@ $string['bookingoptionsmenu'] = 'Buchungsoptionen';
 $string['bookingtext'] = 'Buchungsbeschreibung';
 $string['datenotset'] = 'Datum nicht angegeben';
 $string['daystonotify'] = 'Wie viele Tage vor Kursbeginn soll an die Teilnehmenden eine Benachrichtigung gesendet werden?';
+$string['electivesbookedsuccess'] = 'Ihre ausgewählten Wahlfächer wurden erfolgreich gebucht.';
+$string['errormultibooking'] = 'Beim Buchen der Wahlfächer ist ein Fehler aufgetreten.';
 $string['eventbooking_cancelled'] = 'Buchung wurde storniert';
 $string['eventbookingoption_booked'] = 'Buchung durchgeführt';
 $string['eventreport_viewed'] = 'Übersicht über Buchungen für eine Buchungsoption angesehen';
@@ -606,7 +608,7 @@ $string['mustcombine_help'] = 'Buchungsoptionen mit denen diese Buchungsoption k
 $string['mustnotcombine'] = 'Ausgeschlossene Buchungsoptionen';
 $string['mustnotcombine_help'] = 'Buchungsoptionen mit denen diese Buchungsoption nicht kombiniert werden kann';
 $string['nooptionselected'] = 'Keine Buchungsoption ausgewählt';
-$string['creditsleft'] = 'Du hast noch {$a->credits} von {$a->maxredits} Credits';
+$string['creditsleft'] = 'Du hast noch {$a->credits} von {$a->maxcredits} Credits';
 
 // Importoptions.php.
 $string['csvfile'] = 'CSV Datei';
