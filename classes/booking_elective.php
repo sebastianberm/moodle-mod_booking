@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace mod_booking;
 use mod_booking\booking_utils;
+use stdClass;
+
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot.'/calendar/lib.php');
@@ -64,7 +66,7 @@ class booking_elective {
                 continue;
             }
             // If we haven't found the record, we insert an entry.
-            $newbookingentry = new \stdClass();
+            $newbookingentry = new stdClass();
             $newbookingentry->optionid = $optionid;
             $newbookingentry->otheroptionid = $otheroptionid;
             $newbookingentry->othercourseid = null;
@@ -111,7 +113,7 @@ class booking_elective {
         $warning = '';
 
         if (!empty($booking->settings->banusernames)) {
-            $disabledusernames = explode(',', $this->settings->banusernames);
+            $disabledusernames = explode(',', $booking->settings->banusernames);
 
             foreach ($disabledusernames as $value) {
                 if (strpos($USER->username, trim($value)) !== false) {
@@ -124,7 +126,7 @@ class booking_elective {
             return $warning; // No per-user limits.
         }
 
-        $outdata = new \stdClass();
+        $outdata = new stdClass();
         $outdata->maxcredits = $booking->settings->maxperuser;
         $outdata->credits = booking_elective::return_credits($booking, $USER);
         //$outdata->eventtype = $booking->settings->eventtype;
@@ -177,5 +179,54 @@ class booking_elective {
             }
         }
         return false;
+    }
+
+    /**
+     * Helper function to get an array of all selected elective options of the current instance.
+     * @param number $cmid the instance id of the booking instance (course module id)
+     * @return array an array of the currently selected electives on the current booking instance.
+     */
+    public static function get_electivesarray ($cmid) {
+        $electivespref = get_user_preferences('selected_electives', '');
+        if ($electivespref !== '') {
+            $encodedobjectsarray = explode('#', $electivespref);
+            foreach ($encodedobjectsarray as $encodedobject) {
+                $record = json_decode($encodedobject);
+                if ($record->instance == $cmid) {
+                    $electivesarray = (array) $record->selected;
+                    break;
+                }
+            }
+            if (empty ($electivesarray)) $electivesarray = [];
+        } else {
+            $electivesarray = [];
+        }
+        return $electivesarray;
+    }
+
+    /**
+     * Helper function to update the selected electives user preferences which will update the
+     * electives array in user preferences. Needs the updated object as parameter.
+     * @param stdClass the updated object (with instance id and updated electives array in "selected")
+     */
+    public static function update_selected_electives_preferences(stdClass $updatedobject) {
+        $electivespref = get_user_preferences('selected_electives', '');
+        if ($electivespref !== '') {
+            $encodedobjectsarray = explode('#', $electivespref);
+        } else return false;
+
+        $encodedstringsarray = [];
+        foreach ($encodedobjectsarray as $encodedobject) {
+            $record = json_decode($encodedobject);
+            // Replace the updated object.
+            if ($record->instance == $updatedobject->instance) {
+                $record = $updatedobject;
+                array_push($encodedstringsarray, json_encode($record));
+            } else {
+                array_push($encodedstringsarray, $encodedobject);
+            }
+        }
+        // Now recreate the string and save to user prefs.
+        set_user_preference('selected_electives', implode('#', $encodedstringsarray));
     }
 }

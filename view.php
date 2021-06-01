@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 use mod_booking\all_options;
 use mod_booking\booking;
+use mod_booking\booking_elective;
 
 global $CFG, $DB, $OUTPUT, $PAGE, $USER;
 
@@ -65,7 +66,7 @@ if ($iselective) {
         foreach ($encodedobjectsarray as $encodedobject) {
             $record = json_decode($encodedobject);
             if ($record->instance == $cm->id) {
-                $electivesobject = $record;
+                $electivesobject = $record; // We'll also need the object to update it later.
                 $electivesarray = (array) $record->selected;
                 break;
             }
@@ -78,42 +79,25 @@ if ($iselective) {
         if (($key = array_search($answer, $electivesarray)) !== false) {
             // Remove the elective if it was deselected.
             unset($electivesarray[$key]);
-            // Update the object.
+
+            // Update the array of the object.
             $electivesobject->selected = $electivesarray;
 
-            $encodedstringsarray = [];
-            foreach ($encodedobjectsarray as $encodedobject) {
-                $record = json_decode($encodedobject);
-                // Replace the updated object.
-                if ($record->instance == $electivesobject->instance) {
-                    $record = $electivesobject;
-                    array_push($encodedstringsarray, json_encode($record));
-                } else {
-                    array_push($encodedstringsarray, $encodedobject);
-                }
-            }
-            // Now recreate the string and save to user prefs.
-            set_user_preference('selected_electives', implode('#', $encodedstringsarray));
+            // Now use the object to update user preferences.
+            booking_elective::update_selected_electives_preferences($electivesobject);
         }
     } else {
         if ($electivesobject) {
             $selectedarray = (array) $electivesobject->selected;
+
+            // Add the elective if it was selected.
             array_push($selectedarray, $answer);
+
+            // Update the array of the object.
             $electivesobject->selected = $selectedarray;
 
-            $encodedstringsarray = [];
-            foreach ($encodedobjectsarray as $encodedobject) {
-                $record = json_decode($encodedobject);
-                // Replace the updated object.
-                if ($record->instance == $electivesobject->instance) {
-                    $record = $electivesobject;
-                    array_push($encodedstringsarray, json_encode($record));
-                } else {
-                    array_push($encodedstringsarray, $encodedobject);
-                }
-            }
-            // Now recreate the string and save to user prefs.
-            set_user_preference('selected_electives', implode('#', $encodedstringsarray));
+            // Now use the object to update user preferences.
+            booking_elective::update_selected_electives_preferences($electivesobject);
         } else {
             $electivesobject = new stdClass();
             $electivesobject->instance = $cm->id;
@@ -126,7 +110,6 @@ if ($iselective) {
             }
         }
     }
-    // TODO set $whichview and switch to currently active tab
 }
 
 if (!empty($action)) {
@@ -516,10 +499,10 @@ if (!$current and $bookingopen and has_capability('mod/booking:choose', $context
             }
         }
 
-        if (!\mod_booking\booking_elective::is_elective($booking)) {
+        if (!booking_elective::is_elective($booking)) {
             echo $OUTPUT->box($booking->show_maxperuser($USER), 'mdl-align');
         } else {
-            $message = \mod_booking\booking_elective::show_credits_message($booking, $optionid);
+            $message = booking_elective::show_credits_message($booking, $optionid);
             echo $OUTPUT->box($message, 'mdl-align');
         }
 
@@ -914,6 +897,10 @@ if (!$current and $bookingopen and has_capability('mod/booking:choose', $context
     echo $OUTPUT->error_text(get_string("norighttobook", "booking"));
     echo $OUTPUT->continue_button(new moodle_url('/course/view.php', array('id' => $course->id)));
 }
+// TODO: Add new "Book all selected options" button.
+
+
+
 echo $OUTPUT->box('<a href="http://www.wunderbyte.at">' . get_string('createdby', 'booking') . "</a>",
         'box mdl-align');
 echo $OUTPUT->footer();

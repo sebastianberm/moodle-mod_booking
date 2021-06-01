@@ -485,19 +485,7 @@ class all_options extends table_sql {
                 $buttonoptions['iselective'] = 1;
                 $buttonoptions['whichview'] = $_GET['whichview'];
 
-                $electivespref = get_user_preferences('selected_electives', '');
-                if ($electivespref !== '') {
-                    $encodedobjectsarray = explode('#', $electivespref);
-                    foreach ($encodedobjectsarray as $encodedobject) {
-                        $record = json_decode($encodedobject);
-                        if ($record->instance == $this->cm->id) {
-                            $electivesarray = (array) $record->selected;
-                            break;
-                        }
-                    }
-                } else {
-                    $electivesarray = [];
-                }
+                $electivesarray = booking_elective::get_electivesarray($this->cm->id);
 
                 // Check if already selected.
                 $url = new moodle_url('view.php', $buttonoptions);
