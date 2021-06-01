@@ -186,22 +186,17 @@ class booking_elective {
      * @param number $cmid the instance id of the booking instance (course module id)
      * @return array an array of the currently selected electives on the current booking instance.
      */
-    public static function get_electivesarray ($cmid) {
+    public static function get_electivesarray_from_user_prefs ($cmid) {
         $electivespref = get_user_preferences('selected_electives', '');
-        if ($electivespref !== '') {
-            $encodedobjectsarray = explode('#', $electivespref);
-            foreach ($encodedobjectsarray as $encodedobject) {
-                $record = json_decode($encodedobject);
-                if ($record->instance == $cmid) {
-                    $electivesarray = (array) $record->selected;
-                    break;
-                }
+
+        if ($electivespref && $electivespref != '') {
+            $dataobject = json_decode($electivespref);
+            if ($dataobject && isset($dataobject->$cmid)) {
+                return (array)$dataobject->$cmid;
             }
-            if (empty ($electivesarray)) $electivesarray = [];
-        } else {
-            $electivesarray = [];
+
         }
-        return $electivesarray;
+        return [];
     }
 
     /**
@@ -209,24 +204,27 @@ class booking_elective {
      * electives array in user preferences. Needs the updated object as parameter.
      * @param stdClass the updated object (with instance id and updated electives array in "selected")
      */
-    public static function update_selected_electives_preferences(stdClass $updatedobject) {
-        $electivespref = get_user_preferences('selected_electives', '');
-        if ($electivespref !== '') {
-            $encodedobjectsarray = explode('#', $electivespref);
-        } else return false;
+    public static function set_electivesarray_to_user_prefs(stdClass $updatedobject) {
 
-        $encodedstringsarray = [];
-        foreach ($encodedobjectsarray as $encodedobject) {
-            $record = json_decode($encodedobject);
-            // Replace the updated object.
-            if ($record->instance == $updatedobject->instance) {
-                $record = $updatedobject;
-                array_push($encodedstringsarray, json_encode($record));
-            } else {
-                array_push($encodedstringsarray, $encodedobject);
-            }
+        // set_user_preference('selected_electives', '');
+        $jsonstring = get_user_preferences('selected_electives', '');
+
+        $electivespref = json_decode($jsonstring);
+
+        $instanceid = $updatedobject->instanceid;
+
+        if (!isset($electivespref->$instanceid)
+        || !in_array($updatedobject->optionid, $electivespref->$instanceid)) {
+            $electivespref->$instanceid[] = $updatedobject->optionid;
+        } else {
+            // Delete the value.
+            $key = array_search($updatedobject->optionid, $electivespref->$instanceid);
+            unset($electivespref->$instanceid[$key]);
         }
+
+        $jsonstring = json_encode($electivespref);
+
         // Now recreate the string and save to user prefs.
-        set_user_preference('selected_electives', implode('#', $encodedstringsarray));
+        set_user_preference('selected_electives', $jsonstring);
     }
 }

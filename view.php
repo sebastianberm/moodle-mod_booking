@@ -58,58 +58,13 @@ $booking = new booking($cm->id);
 
 // Store selected electives in user preferences.
 if ($iselective) {
-    $encodedobjectsarray = null;
-    $electivespref = get_user_preferences('selected_electives', '');
-    if ($electivespref !== '') {
-        $electivesobject = null;
-        $encodedobjectsarray = explode('#', $electivespref);
-        foreach ($encodedobjectsarray as $encodedobject) {
-            $record = json_decode($encodedobject);
-            if ($record->instance == $cm->id) {
-                $electivesobject = $record; // We'll also need the object to update it later.
-                $electivesarray = (array) $record->selected;
-                break;
-            }
-         }
-    } else {
-        $electivesarray = [];
-    }
-    // Add or remove the (de)selected elective from user preferences.
-    if (in_array($answer, $electivesarray)) {
-        if (($key = array_search($answer, $electivesarray)) !== false) {
-            // Remove the elective if it was deselected.
-            unset($electivesarray[$key]);
 
-            // Update the array of the object.
-            $electivesobject->selected = $electivesarray;
+    $updateobject = new stdClass();
 
-            // Now use the object to update user preferences.
-            booking_elective::update_selected_electives_preferences($electivesobject);
-        }
-    } else {
-        if ($electivesobject) {
-            $selectedarray = (array) $electivesobject->selected;
+    $updateobject->instanceid = $cm->id;
+    $updateobject->optionid = $answer;
 
-            // Add the elective if it was selected.
-            array_push($selectedarray, $answer);
-
-            // Update the array of the object.
-            $electivesobject->selected = $selectedarray;
-
-            // Now use the object to update user preferences.
-            booking_elective::update_selected_electives_preferences($electivesobject);
-        } else {
-            $electivesobject = new stdClass();
-            $electivesobject->instance = $cm->id;
-            $electivesobject->selected = [];
-            array_push($electivesobject->selected, $answer);
-            if ($electivespref !== '') {
-                set_user_preference('selected_electives', $electivespref . '#' . json_encode($electivesobject));
-            } else {
-                set_user_preference('selected_electives', json_encode($electivesobject));
-            }
-        }
-    }
+    booking_elective::set_electivesarray_to_user_prefs($updateobject);
 }
 
 if (!empty($action)) {
@@ -895,7 +850,7 @@ if (!$current and $bookingopen and has_capability('mod/booking:choose', $context
 } else {
     echo $OUTPUT->header();
     echo $OUTPUT->error_text(get_string("norighttobook", "booking"));
-    echo $OUTPUT->continue_button(new moodle_url('/course/view.php', array('id' => $course->id)));
+    // echo $OUTPUT->continue_button(new moodle_url('/course/view.php', array('id' => $course->id)));
 }
 // TODO: Add new "Book all selected options" button.
 

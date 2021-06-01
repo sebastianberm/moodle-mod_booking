@@ -485,7 +485,7 @@ class all_options extends table_sql {
                 $buttonoptions['iselective'] = 1;
                 $buttonoptions['whichview'] = $_GET['whichview'];
 
-                $electivesarray = booking_elective::get_electivesarray($this->cm->id);
+                $electivesarray = booking_elective::get_electivesarray_from_user_prefs($this->cm->id);
 
                 // Check if already selected.
                 $url = new moodle_url('view.php', $buttonoptions);
