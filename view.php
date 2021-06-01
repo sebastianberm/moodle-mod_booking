@@ -255,6 +255,43 @@ if (!$iselective && $download == '' && $form = data_submitted() && has_capabilit
         echo $OUTPUT->footer();
         die();
     }
+} else if ($iselective && $download == '' && $form = data_submitted() && has_capability('mod/booking:choose', $context)) {
+    // Button to "book all selected electives" has been pressed
+    echo $OUTPUT->header();
+    $timenow = time();
+
+    $url = new moodle_url("view.php", array('id' => $cm->id));
+    //$url->set_anchor("option" . $answer);
+    $electivesarray = get_electivesarray_from_user_prefs($cm->id);
+
+    if (!empty($answer)) {
+        $bookingdata = new \mod_booking\booking_option($cm->id, $answer, array(), 0, 0, false);
+        $bookingdata->apply_tags();
+        if ($bookingdata->user_submit_response($USER)) {
+            $contents = html_writer::tag('p', get_string('bookingsaved', 'booking'));
+            if ($booking->settings->sendmail) {
+                $contents .= html_writer::tag('p', get_string('mailconfirmationsent', 'booking') . ".");
+            }
+            $contents .= $OUTPUT->single_button($url,
+                get_string('continue'), 'get');
+            echo $OUTPUT->box($contents, 'box generalbox', 'notice');
+            echo $OUTPUT->footer();
+            die();
+        } else if (is_numeric($answer)) {
+            $contents = get_string('bookingmeanwhilefull', 'booking') . " " . format_string($bookingdata->option->text);
+            $contents .= $OUTPUT->single_button($url,
+                get_string('continue'), 'get');
+            echo $OUTPUT->box($contents, 'box generalbox', 'notice');
+            echo $OUTPUT->footer();
+            die();
+        }
+    } else {
+        $contents = get_string('nobookingselected', 'booking');
+        $contents .= $OUTPUT->single_button($url, get_string('continue'));
+        echo $OUTPUT->box($contents, 'box generalbox', 'notice');
+        echo $OUTPUT->footer();
+        die();
+    }
 }
 
 $event = \mod_booking\event\course_module_viewed::create(
