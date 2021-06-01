@@ -712,6 +712,19 @@ if (!$current and $bookingopen and has_capability('mod/booking:choose', $context
                     AND br.userid = :userid5) AS myrating
                 ";
         $from = "{booking} b LEFT JOIN {booking_options} bo ON bo.bookingid = b.id";
+
+        if ($iselective) {
+            $from .= " LEFT JOIN {booking_combinations} bc ON bo.id = bc.otheroptionid";
+            $conditions[] = "(bc.optionid IS null
+            OR bc.cancombine = 1
+            OR (bc.cancombine = 0
+            AND bc.optionid NOT IN (:selectedoptionids)))";
+
+            $electivesarray = booking_elective::get_electivesarray_from_user_prefs($cm->id);
+
+            $conditionsparams['selectedoptionids'] = $electivesarray ? implode(', ', $electivesarray) : '';
+        }
+
         $where = "b.id = :bookingid " .
                  (empty($conditions) ? '' : ' AND ' . implode(' AND ', $conditions));
 
