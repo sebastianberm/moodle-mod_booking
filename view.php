@@ -923,6 +923,9 @@ $moodleurl = new moodle_url('view.php', $urloptions);
 // ... when no more credits are left.
 if ($booking->settings->consumeatonce == 1 && booking_elective::return_credits_left($booking) !== 0) {
     $selectbtnoptions['class'] = 'btn btn-primary disabled';
+} elseif (count(booking_elective::get_electivesarray_from_user_prefs($booking->cm->id)) == 0) {
+    // Also, disable the button when there is nothing selected.
+    $selectbtnoptions['class'] = 'btn btn-primary disabled';
 } else {
     $selectbtnoptions['class'] = 'btn btn-primary';
 }
