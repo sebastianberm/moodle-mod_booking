@@ -186,6 +186,8 @@ class booking_elective {
             $credits += +$item->credits;
         }
 
+        $credits += self::return_credits_selected($booking);
+
         $credits = +$booking->settings->maxperuser - $credits;
 
         return $credits;

@@ -710,8 +710,10 @@ if (!$current and $bookingopen and has_capability('mod/booking:choose', $context
             $from .= " LEFT JOIN {booking_combinations} bc ON bo.id = bc.otheroptionid AND bc.optionid IN (". $selectedarray . ")";
             $conditions[] = "(bc.cancombine = 1
             OR bc.optionid IS null)";
+            $conditions[] = "((bo.credits < :creditsleft) 
+            OR bo.id IN (". $selectedarray . "))";
 
-            //$conditionsparams['selectedoptionids'] = $electivesarray ? implode(', ', $electivesarray) : '';
+            $conditionsparams['creditsleft'] = booking_elective::return_credits_left($booking);
         }
 
         $where = "b.id = :bookingid " .
