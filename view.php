@@ -56,28 +56,25 @@ $context = context_module::instance($cm->id);
 
 $booking = new booking($cm->id);
 
-$iselective = booking_elective::is_elective($booking);
-
-// Debugging: Use set_user_preference('selected_electives', ''); to reset the selected electives.
-//set_user_preference('selected_electives', '');
-
-// Store selected electives in user preferences.
-if ($iselective) {
-    $updateobject = new stdClass();
-    $updateobject->instanceid = $cm->id;
-    $updateobject->optionid = $answer;
-    booking_elective::set_electivesarray_to_user_prefs($updateobject);
-}
-
 if (!empty($action)) {
     $urlparams['action'] = $action;
 }
 
 if (!empty($whichview)) {
-    $urlparams['whichview'] = $whichview;
+    $_GET['whichview'] = $whichview;
 } else {
-    $urlparams['whichview'] = $booking->settings->whichview;
+    $_GET['whichview'] = $booking->settings->whichview;
     $whichview = $booking->settings->whichview;
+}
+
+// Store selected electives in user preferences.
+$iselective = booking_elective::is_elective($booking);
+
+if ($iselective) {
+    $updateobject = new stdClass();
+    $updateobject->instanceid = $cm->id;
+    $updateobject->optionid = $answer;
+    booking_elective::set_electivesarray_to_user_prefs($updateobject);
 }
 
 if ($optionid > 0) {
