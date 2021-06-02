@@ -218,8 +218,8 @@ class option_form extends moodleform {
                                 'accepted_types' => array('*')));
 
         // Elective.
-
         $mform->addElement('header', 'electiveoptions', get_string('electivesettings', 'booking'));
+        $mform->setExpanded('electiveoptions', true);
 
         $opts = array_combine(range(0, 50), range(0, 50));
         $extraopts = array_combine(range(55, 500, 5), range(55, 500, 5));

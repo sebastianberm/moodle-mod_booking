@@ -189,6 +189,7 @@ class mod_booking_mod_form extends moodleform_mod {
         // Elective.
         $mform->addElement('header', 'electivesettings',
                 get_string('electivesettings', 'booking'));
+        $mform->setExpanded('electivesettings', true);
 
         $mform->addElement('checkbox', 'iselective', get_string('iselective', 'booking'));
 
