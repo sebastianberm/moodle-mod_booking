@@ -909,13 +909,10 @@ if (!$current and $bookingopen and has_capability('mod/booking:choose', $context
     // echo $OUTPUT->continue_button(new moodle_url('/course/view.php', array('id' => $course->id)));
 }
 
-// TODO: Add new "Book all selected options" button.
 $buttonoptions = array('id' => $cm->id, 'action' => 'multibooking', 'sesskey' => $USER->sesskey);
 $url = new moodle_url('view.php', $buttonoptions);
 
 echo $OUTPUT->single_button($url, get_string('bookelectivesbtn', 'booking'), 'post');
-// echo html_writer::link($url, get_string('bookelectivesbtn', 'booking'), ['method' => 'post', 'class' => 'btn btn-primary']);
-// TODO: Button does not yet work correctly - implement multibooking logic.
 
 echo $OUTPUT->box('<a href="http://www.wunderbyte.at">' . get_string('createdby', 'booking') . "</a>",
         'box mdl-align');

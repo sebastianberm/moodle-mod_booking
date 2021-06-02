@@ -763,7 +763,7 @@ $string['mustcombine_help'] = 'Booking options which have to be combined with th
 $string['mustnotcombine'] = 'Excluded booking options';
 $string['mustnotcombine_help'] = 'Booking options which can\'t be  combined with this option';
 $string['nooptionselected'] = 'No booking option selected';
-$string['creditsleft'] = '{$a->credits} of {$a->maxcredits} credits left';
+$string['creditsmessage'] = 'Selected: {$a->selected} of {$a->creditsleft} credits | Already booked: {$a->creditsbooked} of {$a->maxcredits} credits';
 
 // editoptions.php
 $string['addeditbooking'] = 'Edit booking option';

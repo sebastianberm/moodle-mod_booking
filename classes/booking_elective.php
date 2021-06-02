@@ -127,18 +127,47 @@ class booking_elective {
         }
 
         $outdata = new stdClass();
+        $outdata->selected = booking_elective::return_credits_selected($booking);
+        $outdata->creditsleft = booking_elective::return_credits_left($booking);
+        $outdata->creditsbooked = booking_elective::return_credits_booked($booking);
         $outdata->maxcredits = $booking->settings->maxperuser;
-        $outdata->credits = booking_elective::return_credits($booking);
-        $warning .= \html_writer::tag('div', get_string('creditsleft', 'mod_booking', $outdata), array ('class' => 'alert alert-warning'));
+
+        $warning .= \html_writer::tag('div', get_string('creditsmessage', 'mod_booking', $outdata), array ('class' => 'alert alert-warning'));
         return $warning;
     }
 
     /**
-     * @param $optionid
-     * @return array
-     * @throws \dml_exception
+     * Helper function to return the sum of credits of already booked electives
+     * @param stdClass $booking
+     * @return int the sum of credits booked
      */
-    public static function return_credits($booking) {
+    public static function return_credits_booked($booking) {
+        global $DB, $USER;
+
+        $sql = "SELECT bo.id, bo.credits
+        FROM {booking_answers} ba
+        INNER JOIN {booking_options} bo
+        ON ba.optionid = bo.id
+        WHERE ba.userid = $USER->id
+        AND bo.bookingid = $booking->id"
+        ;
+
+        $data = $DB->get_records_sql($sql);
+        $credits = 0;
+
+        foreach ($data as $item) {
+            $credits += +$item->credits;
+        }
+
+        return $credits;
+    }
+
+    /**
+     * Helper function to return the number of credits left after booking.
+     * @param stdClass $booking
+     * @return int the number of credits left
+     */
+    public static function return_credits_left($booking) {
 
         global $DB, $USER;
 
@@ -159,6 +188,28 @@ class booking_elective {
 
         $credits = +$booking->settings->maxperuser - $credits;
 
+        return $credits;
+    }
+
+    /**
+     * Helper function to count the sum of all currently selected electives.
+     * @param stdClass $booking the current bookinginstance
+     * @return numeric the sum of credits of all currently selected electives
+     */
+    public static function return_credits_selected($booking) {
+        global $DB;
+        $electivesarray = self::get_electivesarray_from_user_prefs($booking->cm->id);
+
+        $credits = 0;
+        foreach ($electivesarray as $selected) {
+            if (!empty($selected)) {
+                if (!$record = $DB->get_record('booking_options', ['id' => (int) $selected], 'credits')) {
+                    return false;
+                } else {
+                    $credits += $record->credits;
+                }
+            }
+        }
         return $credits;
     }
 
