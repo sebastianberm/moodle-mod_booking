@@ -918,11 +918,15 @@ if (!$current and $bookingopen and has_capability('mod/booking:choose', $context
 
 $urloptions = array('id' => $cm->id, 'action' => 'multibooking', 'sesskey' => $USER->sesskey);
 $moodleurl = new moodle_url('view.php', $urloptions);
-//$url = 'view.php?' . $moodleurl->get_query_string();
 
-$selectbtnoptions['class'] = 'btn btn-primary';
+// If all credits have to be consumed at once, only enable the "book all selected" button...
+// ... when no more credits are left.
+if ($booking->settings->consumeatonce == 1 && booking_elective::return_credits_left($booking) !== 0) {
+    $selectbtnoptions['class'] = 'btn btn-primary disabled';
+} else {
+    $selectbtnoptions['class'] = 'btn btn-primary';
+}
 echo html_writer::link($moodleurl, get_string('bookelectivesbtn', 'booking'), $selectbtnoptions);
-//echo $OUTPUT->single_button($url, get_string('bookelectivesbtn', 'booking'), 'post');
 
 echo $OUTPUT->box('<a href="http://www.wunderbyte.at">' . get_string('createdby', 'booking') . "</a>",
         'box mdl-align');
