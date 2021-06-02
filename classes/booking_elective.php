@@ -258,7 +258,7 @@ class booking_elective {
      * @param stdClass the updated object (with instance id and updated electives array in "selected")
      */
     public static function set_electivesarray_to_user_prefs(stdClass $updatedobject) {
-        
+        //set_user_preference('selected_electives', ''); // Debugging.
         $jsonstring = get_user_preferences('selected_electives', '');
         $electivespref = json_decode($jsonstring);
         $instanceid = $updatedobject->instanceid;

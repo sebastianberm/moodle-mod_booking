@@ -70,7 +70,7 @@ if (!empty($whichview)) {
 // Store selected electives in user preferences.
 $iselective = booking_elective::is_elective($booking);
 
-if ($iselective) {
+if ($iselective && $answer) {
     $updateobject = new stdClass();
     $updateobject->instanceid = $cm->id;
     $updateobject->optionid = $answer;
@@ -701,7 +701,8 @@ if (!$current and $bookingopen and has_capability('mod/booking:choose', $context
 
             $electivesarray = booking_elective::get_electivesarray_from_user_prefs($cm->id);
 
-            $selectedarray = $electivesarray && $electivesarray[0] != '' ? implode("','", $electivesarray) : '0';
+            $selectedarray = $electivesarray && $electivesarray[0] != '' ? implode(",", $electivesarray) : '0';
+            $selectedarray = rtrim($selectedarray, ',');
 
             if ($selectedarray == "") {
                 $selectedarray = 0;
@@ -913,10 +914,13 @@ if (!$current and $bookingopen and has_capability('mod/booking:choose', $context
     // echo $OUTPUT->continue_button(new moodle_url('/course/view.php', array('id' => $course->id)));
 }
 
-$buttonoptions = array('id' => $cm->id, 'action' => 'multibooking', 'sesskey' => $USER->sesskey);
-$url = new moodle_url('view.php', $buttonoptions);
+$urloptions = array('id' => $cm->id, 'action' => 'multibooking', 'sesskey' => $USER->sesskey);
+$moodleurl = new moodle_url('view.php', $urloptions);
+$url = 'view.php?' . $moodleurl->get_query_string();
 
-echo $OUTPUT->single_button($url, get_string('bookelectivesbtn', 'booking'), 'post');
+$selectbtnoptions['class'] = 'btn btn-secondary';
+echo html_writer::link($url, get_string('bookelectivesbtn', 'booking'), $selectbtnoptions);
+//echo $OUTPUT->single_button($url, get_string('bookelectivesbtn', 'booking'), 'post');
 
 echo $OUTPUT->box('<a href="http://www.wunderbyte.at">' . get_string('createdby', 'booking') . "</a>",
         'box mdl-align');
