@@ -73,6 +73,11 @@ class booking_elective {
             $newbookingentry->cancombine = $mustcombine;
 
             $DB->insert_record('booking_combinations', $newbookingentry);
+
+            $newbookingentry->optionid = $otheroptionid;
+            $newbookingentry->otheroptionid = $optionid;
+
+            $DB->insert_record('booking_combinations', $newbookingentry);
         }
 
         // Finally, we run through the existing records and see which were not in the array.
@@ -81,6 +86,9 @@ class booking_elective {
         foreach ($existingrecords as $item) {
             if (!property_exists($item, 'exists')) {
                 $DB->delete_records('booking_combinations', array('id' => $item->id));
+
+                // Also delete the pair
+                $DB->delete_records('booking_combinations', array('optionid' => $item->otheroptionid, 'otheroptionid' => $item->optionid, 'cancombine' => $mustcombine));
             }
         }
     }
