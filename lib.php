@@ -417,9 +417,8 @@ function booking_add_instance($booking) {
     }
 
     // If this is used as an elective, we replace maxperuser
-    if (isset($booking->showelective) && $booking->showelective == 1) {
-        $booking->maxperuser = $booking->maxcredits;
-        $booking->eventtype = 'elective';
+    if (isset($booking->iselective) && $booking->iselective == 1) {
+        $booking->maxcredits = $booking->maxcredits;
     }
 
     // Insert answer options from mod_form.
@@ -510,6 +509,25 @@ function booking_update_instance($booking) {
         $booking->templateid = 0;
     }
 
+    if (isset($booking->iselective) && $booking->iselective > 0) {
+        $booking->iselective = $booking->iselective;
+    } else {
+        $booking->iselective = 0;
+    }
+
+    if (isset($booking->enforceorder) && $booking->enforceorder > 0) {
+        $booking->enforceorder = $booking->enforceorder;
+    } else {
+        $booking->enforceorder = 0;
+    }
+
+    if (isset($booking->consumeatonce) && $booking->consumeatonce > 0) {
+        $booking->consumeatonce = $booking->consumeatonce;
+    } else {
+        $booking->consumeatonce = 0;
+    }
+
+
     if (isset($booking->optionsfields) && count($booking->optionsfields) > 0) {
         $booking->optionsfields = implode(',', $booking->optionsfields);
     } else {
@@ -558,6 +576,7 @@ function booking_update_instance($booking) {
     if (isset($booking->aftercompletedtext['text'])) {
         $booking->aftercompletedtext = $booking->aftercompletedtext['text'];
     }
+
     $booking->bookedtext = $booking->bookedtext['text'];
     $booking->waitingtext = $booking->waitingtext['text'];
     $booking->notifyemail = $booking->notifyemail['text'];
@@ -592,14 +611,6 @@ function booking_update_instance($booking) {
                 }
             }
         }
-    }
-
-    // If this is used as an elective, we replace maxperuser
-    if (isset($booking->showelective) && $booking->showelective == 1) {
-        $booking->maxperuser = $booking->maxcredits;
-        $booking->eventtype = 'elective';
-    } else {
-        $booking->eventtype = '';
     }
 
     booking_grade_item_update($booking);

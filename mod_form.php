@@ -110,9 +110,7 @@ class mod_booking_mod_form extends moodleform_mod {
             $mform->setType('eventtype', PARAM_CLEANHTML);
         }
 
-        // $mform->addRule('eventtype', null, 'required', null, 'server', false);
-
-        $mform->hideIf('eventtype', 'showelective', 'checked');
+        $mform->addRule('eventtype', null, 'required', null, 'client');
 
         // With this checkbox the instance can be turned into an elective and show the elective tab.
 
@@ -192,13 +190,13 @@ class mod_booking_mod_form extends moodleform_mod {
         $mform->addElement('header', 'electivesettings',
                 get_string('electivesettings', 'booking'));
 
-        $mform->addElement('checkbox', 'showelective', get_string('showelective', 'booking'));
+        $mform->addElement('checkbox', 'iselective', get_string('iselective', 'booking'));
 
-        $mform->addElement('checkbox', 'forceconsecutive', get_string('forceconsecutive', 'booking'));
-        $mform->addHelpButton('forceconsecutive', 'forceconsecutive', 'mod_booking');
+        $mform->addElement('checkbox', 'enforceorder', get_string('enforceorder', 'booking'));
+        $mform->addHelpButton('enforceorder', 'enforceorder', 'mod_booking');
 
-        $mform->addElement('checkbox', 'useallcredits', get_string('useallcredits', 'booking'));
-        $mform->addHelpButton('useallcredits', 'useallcredits', 'mod_booking');
+        $mform->addElement('checkbox', 'consumeatonce', get_string('consumeatonce', 'booking'));
+        $mform->addHelpButton('consumeatonce', 'consumeatonce', 'mod_booking');
 
         $opts = array(0 => get_string('unlimitedcredits', 'mod_booking'));
         $extraopts = array_combine(range(1, 50), range(1, 50));
@@ -208,20 +206,11 @@ class mod_booking_mod_form extends moodleform_mod {
         $mform->addElement('select', 'maxcredits', get_string('maxcredits', 'mod_booking'), $opts);
         $mform->addHelpButton('maxcredits', 'maxcredits', 'mod_booking');
 
-        if (isset($this->current->eventtype) && $this->current->eventtype == 'elective') {
-            $mform->setDefault('showelective', 1);
-            $mform->setDefault('maxcredits', $this->current->maxperuser);
-        } else {
-            $mform->setDefault('maxcredits', 0);
-        }
-
-
         // Only if the Instance is used as elective, we show these settings.
-        $mform->disabledIf('forceconsecutive', 'showelective', 'notchecked');
-        $mform->disabledIf('maxcredits', 'showelective', 'notchecked');
-        $mform->disabledIf('useallcredits', 'showelective', 'notchecked');
-        $mform->disabledIf('useallcredits', 'maxcredits', 'eq', 0);
-
+        $mform->disabledIf('enforceorder', 'iselective', 'notchecked');
+        $mform->disabledIf('maxcredits', 'iselective', 'notchecked');
+        $mform->disabledIf('consumeatonce', 'iselective', 'notchecked');
+        $mform->disabledIf('consumeatonce', 'maxcredits', 'eq', 0);
 
         // Confirmation message.
         $mform->addElement('header', 'confirmation',

@@ -101,7 +101,7 @@ class booking_elective {
      * @return bool
      */
     public static function is_elective($booking) {
-        if ($booking->settings->eventtype === 'elective') {
+        if ($booking->settings->iselective == 1) {
             return true;
         }
         return false;

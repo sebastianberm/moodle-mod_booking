@@ -481,7 +481,7 @@ class all_options extends table_sql {
                 $buttonoptions['confirm'] = 1;
             }
 
-            if ($this->booking->settings->eventtype === 'elective') {
+            if (booking_elective::is_elective($this->booking)) {
                 $buttonoptions['whichview'] = $_GET['whichview'];
                 $buttonoptions['optionid'] = $values->id;
 

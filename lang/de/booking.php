@@ -592,15 +592,15 @@ $string['newtemplatesaved'] = 'Neue Buchungsoptionsvorlage wurde gespeichert.';
 $string['option_template_not_saved_no_valid_license'] = 'Buchungsoption konnte nicht als Vorlage gespeichert werden. 
                                                   Holen Sie sich die PRO-Version, um beliebig viele Vorlagen erstellen 
                                                   zu können.';
-$string['useaselective'] = 'Verwende Instanz als Wahlfach';
-$string['useaselective_help'] = 'Damit können NutzerInnen gezwungen werden, mehrere Buchungen auf einmal in einer bestimmten Reihenfolge und in gewissen Beziehungen zueinander vorzunehmen, außerdem kann der Verbrauch von Credits erzwungen werden.';
+$string['iselective'] = 'Verwende Instanz als Wahlfach';
+$string['iselective_help'] = 'Damit können NutzerInnen gezwungen werden, mehrere Buchungen auf einmal in einer bestimmten Reihenfolge und in gewissen Beziehungen zueinander vorzunehmen, außerdem kann der Verbrauch von Credits erzwungen werden.';
 $string['maxcredits'] = 'Anzahl verfügbare Credits';
 $string['maxcredits_help'] = 'Sie können die maximal in dieser Buchung verfügbaren Credits angeben, die verbraucht werden können oder müssen. Für jede Buchungsoption können die entsprechenden Credits angegeben werden.';
 $string['unlimitedcredits'] = 'Verwende keine Credits';
-$string['forceconsecutive'] = 'Erzwinge Reihenfolge';
-$string['forceconsecutive_help'] = 'NutzerInnen werden erst nach Abschluss des vorangegangene Kurses in den nächsten Kurs eingeschrieben.';
-$string['useallcredits'] = 'Alle Credits müssen in einer Buchung verbraucht werden';
-$string['useallcredits_help'] = 'Die NutzerInnen haben nur einen einzigen Buchungsschritt, bei dem alle Wahlfächer gebucht werden müssen.';
+$string['enforceorder'] = 'Erzwinge Reihenfolge';
+$string['enforceorder_help'] = 'NutzerInnen werden erst nach Abschluss des vorangegangene Kurses in den nächsten Kurs eingeschrieben.';
+$string['consumeatonce'] = 'Alle Credits müssen in einer Buchung verbraucht werden';
+$string['consumeatonce_help'] = 'Die NutzerInnen haben nur einen einzigen Buchungsschritt, bei dem alle Wahlfächer gebucht werden müssen.';
 $string['credits'] = 'Credits';
 $string['credits_help'] = 'Wie viele credits werden bei der Buchung dieser Option verbraucht';
 $string['mustcombine'] = 'Notwendige Buchungsoptionen';

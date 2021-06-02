@@ -2090,15 +2090,38 @@ function xmldb_booking_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2021051901, 'booking');
     }
 
-    if ($oldversion < 2021053102) {
+    if ($oldversion < 2021060200) {
         // Add field consecutive to instance.
         $table = new xmldb_table('booking');
-        $field = new xmldb_field('consecutive', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
 
-        // Conditionally launch add field optiondateid.
+        $field = new xmldb_field('iselective', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+
+        // Conditionally launch add field iselecitve.
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
+
+        $field = new xmldb_field('consumeatonce', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+
+        // Conditionally launch add field consumeatonce.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $field = new xmldb_field('maxcredits', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+
+        // Conditionally launch add field maxcredits.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $field = new xmldb_field('enforceorder', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+
+        // Conditionally launch add field enforceorder.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
 
         // Add field credits to booking options.
         $table = new xmldb_table('booking_options');
@@ -2128,7 +2151,7 @@ function xmldb_booking_upgrade($oldversion) {
 
 
         // Booking savepoint reached.
-        upgrade_mod_savepoint(true, 2021053102, 'booking');
+        upgrade_mod_savepoint(true, 2021060200, 'booking');
     }
 
     return true;

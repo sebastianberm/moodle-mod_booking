@@ -52,7 +52,7 @@ class backup_booking_activity_structure_step extends backup_activity_structure_s
                     'responsesfields', 'reportfields', 'beforebookedtext', 'beforecompletedtext',
                     'aftercompletedtext', 'signinsheetfields', 'comments', 'ratings', 'removeuseronunenrol',
                     'teacherroleid', 'allowupdatedays', 'templateid', 'defaultoptionsort', 'showviews', 'customtemplateid',
-                    'autcractive', 'autcrprofile', 'autcrvalue', 'autcrtemplate', 'consecutive'));
+                    'autcractive', 'autcrprofile', 'autcrvalue', 'autcrtemplate', 'iselective', 'maxcredits', 'consumeatonce', 'enforceorder'));
 
         $options = new backup_nested_element('options');
         $option = new backup_nested_element('option', array('id'),
