@@ -122,13 +122,13 @@ class booking_elective {
             }
         }
 
-        if (!$booking->settings->maxperuser) {
-            return $warning; // No per-user limits.
+        if (!$booking->settings->maxcredits) {
+            return $warning; // No credits maximum set.
         }
 
         $outdata = new stdClass();
         $outdata->creditsleft = booking_elective::return_credits_left($booking);
-        $outdata->maxcredits = $booking->settings->maxperuser;
+        $outdata->maxcredits = $booking->settings->maxcredits;
 
         $warning .= \html_writer::tag('div', get_string('creditsmessage', 'mod_booking', $outdata), array ('class' => 'alert alert-warning'));
         return $warning;
@@ -186,7 +186,7 @@ class booking_elective {
 
         $credits += self::return_credits_selected($booking);
 
-        $credits = +$booking->settings->maxperuser - $credits;
+        $credits = +$booking->settings->maxcredits - $credits;
 
         return $credits;
     }
