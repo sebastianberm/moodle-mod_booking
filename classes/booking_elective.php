@@ -127,9 +127,7 @@ class booking_elective {
         }
 
         $outdata = new stdClass();
-        $outdata->selected = booking_elective::return_credits_selected($booking);
         $outdata->creditsleft = booking_elective::return_credits_left($booking);
-        $outdata->creditsbooked = booking_elective::return_credits_booked($booking);
         $outdata->maxcredits = $booking->settings->maxperuser;
 
         $warning .= \html_writer::tag('div', get_string('creditsmessage', 'mod_booking', $outdata), array ('class' => 'alert alert-warning'));

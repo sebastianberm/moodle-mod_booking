@@ -491,15 +491,7 @@ class all_options extends table_sql {
                 $url = new moodle_url('view.php', $buttonoptions);
                 // Show the select button if the elective was not already selected.
                 if (!in_array($buttonoptions['answer'], $electivesarray)) {
-                    // Deactivate the button, if it belongs to an option with more credits than are left.
-                    if (booking_elective::return_credits_left($this->booking)
-                        - booking_elective::return_credits_selected($this->booking)
-                        - $values->credits < 0) {
-                        $selectbtnoptions['class'] = 'btn btn-secondary disabled';
-                    } else {
-                        $selectbtnoptions['class'] = 'btn btn-secondary';
-                    }
-                    $button = html_writer::link($url, get_string('electiveselectbtn', 'booking'), $selectbtnoptions);
+                    $button = html_writer::link($url, get_string('electiveselectbtn', 'booking'), ['class' => 'btn btn-info']);
                 } else {
                     // Else, show a deselect button.
                     $button = html_writer::link($url, get_string('electivedeselectbtn', 'booking'), ['class' => 'btn btn-danger']);

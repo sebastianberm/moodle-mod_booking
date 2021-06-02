@@ -254,9 +254,9 @@ if (!$iselective && $download == '' && $form = data_submitted() && has_capabilit
         echo $OUTPUT->footer();
         die();
     }
-} else if ($iselective  && !$done && $download == '' && $form = data_submitted() && has_capability('mod/booking:choose', $context)) {
+//} else if ($iselective  && !$done && $download == '' && $form = data_submitted() && has_capability('mod/booking:choose', $context)) {
+} else if ($iselective  && !$done && $download == '' && $action == 'multibooking' && has_capability('mod/booking:choose', $context)) {
     // Button to "book all selected electives" has been pressed
-
     $electivesarray = booking_elective::get_electivesarray_from_user_prefs($cm->id);
 
     if ( count($electivesarray) == 1 && $electivesarray[0] == '') {
@@ -413,7 +413,7 @@ if (!$current and $bookingopen and has_capability('mod/booking:choose', $context
         }
 
         // Only for Debugging. TODO: delete this
-        // echo html_writer::tag('pre', get_user_preferences('selected_electives'));
+        echo html_writer::tag('pre', get_user_preferences('selected_electives'));
 
         $out = array();
         $fs = get_file_storage();
@@ -708,11 +708,13 @@ if (!$current and $bookingopen and has_capability('mod/booking:choose', $context
                 $selectedarray = 0;
             }
 
-            $from .= " LEFT JOIN {booking_combinations} bc ON bo.id = bc.otheroptionid AND bc.optionid IN (". $selectedarray . ")";
-            $conditions[] = "(bc.cancombine = 1
-            OR bc.optionid IS null)";
-            $conditions[] = "((bo.credits < :creditsleft) 
-            OR bo.id IN (". $selectedarray . "))";
+            if ($whichview !== 'mybooking') {
+                $from .= " LEFT JOIN {booking_combinations} bc ON bo.id = bc.otheroptionid AND bc.optionid IN (". $selectedarray . ")";
+                $conditions[] = "(bc.cancombine = 1
+                OR bc.optionid IS null)";
+                    $conditions[] = "((bo.credits <= :creditsleft) 
+                OR bo.id IN (". $selectedarray . "))";
+            }
 
             $conditionsparams['creditsleft'] = booking_elective::return_credits_left($booking);
         }
@@ -916,10 +918,10 @@ if (!$current and $bookingopen and has_capability('mod/booking:choose', $context
 
 $urloptions = array('id' => $cm->id, 'action' => 'multibooking', 'sesskey' => $USER->sesskey);
 $moodleurl = new moodle_url('view.php', $urloptions);
-$url = 'view.php?' . $moodleurl->get_query_string();
+//$url = 'view.php?' . $moodleurl->get_query_string();
 
-$selectbtnoptions['class'] = 'btn btn-secondary';
-echo html_writer::link($url, get_string('bookelectivesbtn', 'booking'), $selectbtnoptions);
+$selectbtnoptions['class'] = 'btn btn-primary';
+echo html_writer::link($moodleurl, get_string('bookelectivesbtn', 'booking'), $selectbtnoptions);
 //echo $OUTPUT->single_button($url, get_string('bookelectivesbtn', 'booking'), 'post');
 
 echo $OUTPUT->box('<a href="http://www.wunderbyte.at">' . get_string('createdby', 'booking') . "</a>",

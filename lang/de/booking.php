@@ -608,7 +608,7 @@ $string['mustcombine_help'] = 'Buchungsoptionen mit denen diese Buchungsoption k
 $string['mustnotcombine'] = 'Ausgeschlossene Buchungsoptionen';
 $string['mustnotcombine_help'] = 'Buchungsoptionen mit denen diese Buchungsoption nicht kombiniert werden kann';
 $string['nooptionselected'] = 'Keine Buchungsoption ausgewählt';
-$string['creditsmessage'] = 'Ausgewählt: {$a->selected} von {$a->creditsleft} Credits | Bereits gebucht: {$a->creditsbooked} von {$a->maxcredits} Credits';
+$string['creditsmessage'] = 'Noch {$a->creditsleft} von insgesamt {$a->maxcredits} Credits verfügbar.';
 
 // Importoptions.php.
 $string['csvfile'] = 'CSV Datei';
