@@ -416,11 +416,6 @@ function booking_add_instance($booking) {
         $booking->aftercompletedtext = $booking->aftercompletedtext['text'];
     }
 
-    // If this is used as an elective, we replace maxperuser
-    if (isset($booking->iselective) && $booking->iselective == 1) {
-        $booking->maxcredits = $booking->maxcredits;
-    }
-
     // Insert answer options from mod_form.
     $booking->id = $DB->insert_record("booking", $booking);
 

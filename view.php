@@ -68,7 +68,7 @@ if (!empty($whichview)) {
 }
 
 // Store selected electives in user preferences.
-$iselective = booking_elective::is_elective($booking);
+$iselective = $booking->is_elective();
 
 if ($iselective && $answer) {
     $updateobject = new stdClass();
@@ -413,7 +413,7 @@ if (!$current and $bookingopen and has_capability('mod/booking:choose', $context
         }
 
         // Only for Debugging. TODO: delete this
-        echo html_writer::tag('pre', get_user_preferences('selected_electives'));
+        // echo html_writer::tag('pre', get_user_preferences('selected_electives'));
 
         $out = array();
         $fs = get_file_storage();
@@ -712,8 +712,11 @@ if (!$current and $bookingopen and has_capability('mod/booking:choose', $context
                 $from .= " LEFT JOIN {booking_combinations} bc ON bo.id = bc.otheroptionid AND bc.optionid IN (". $selectedarray . ")";
                 $conditions[] = "(bc.cancombine = 1
                 OR bc.optionid IS null)";
+
+                if ($booking->uses_credits()) {
                     $conditions[] = "((bo.credits <= :creditsleft) 
                 OR bo.id IN (". $selectedarray . "))";
+                }
             }
 
             $conditionsparams['creditsleft'] = booking_elective::return_credits_left($booking);
@@ -919,17 +922,20 @@ if (!$current and $bookingopen and has_capability('mod/booking:choose', $context
 $urloptions = array('id' => $cm->id, 'action' => 'multibooking', 'sesskey' => $USER->sesskey);
 $moodleurl = new moodle_url('view.php', $urloptions);
 
-// If all credits have to be consumed at once, only enable the "book all selected" button...
-// ... when no more credits are left.
-if ($booking->settings->consumeatonce == 1 && booking_elective::return_credits_left($booking) !== 0) {
-    $selectbtnoptions['class'] = 'btn btn-primary disabled';
-} elseif (count(booking_elective::get_electivesarray_from_user_prefs($booking->cm->id)) == 0) {
-    // Also, disable the button when there is nothing selected.
-    $selectbtnoptions['class'] = 'btn btn-primary disabled';
-} else {
-    $selectbtnoptions['class'] = 'btn btn-primary';
+// Show Button only if is Elective
+if ($iselective) {
+    // If all credits have to be consumed at once, only enable the "book all selected" button...
+    // ... when no more credits are left.
+    if ($booking->settings->consumeatonce == 1 && booking_elective::return_credits_left($booking) !== 0) {
+        $selectbtnoptions['class'] = 'btn btn-primary disabled';
+    } elseif (count(booking_elective::get_electivesarray_from_user_prefs($booking->cm->id)) == 0) {
+        // Also, disable the button when there is nothing selected.
+        $selectbtnoptions['class'] = 'btn btn-primary disabled';
+    } else {
+        $selectbtnoptions['class'] = 'btn btn-primary';
+    }
+    echo html_writer::link($moodleurl, get_string('bookelectivesbtn', 'booking'), $selectbtnoptions);
 }
-echo html_writer::link($moodleurl, get_string('bookelectivesbtn', 'booking'), $selectbtnoptions);
 
 echo $OUTPUT->box('<a href="http://www.wunderbyte.at">' . get_string('createdby', 'booking') . "</a>",
         'box mdl-align');

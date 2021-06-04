@@ -273,7 +273,8 @@ class all_options extends table_sql {
         $output = '';
         $output .= html_writer::tag('h4', format_string($values->text, true, $this->booking->settings->course));
         // If the booking option has credits (for electives), then show them right below the title text.
-        if (!empty($values->credits)) {
+        if ($this->booking->uses_credits()
+                && !empty($values->credits)) {
             $output .= html_writer::tag('pre', $values->credits . ' ' . format_string(get_string('credits', 'booking'), true,
                                                                 $this->booking->settings->course));
         }
@@ -481,7 +482,7 @@ class all_options extends table_sql {
                 $buttonoptions['confirm'] = 1;
             }
 
-            if (booking_elective::is_elective($this->booking)) {
+            if ($this->booking->is_elective()) {
                 $buttonoptions['whichview'] = $_GET['whichview'];
                 $buttonoptions['optionid'] = $values->id;
 

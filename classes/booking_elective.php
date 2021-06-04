@@ -105,14 +105,35 @@ class booking_elective {
     }
 
     /**
-     * @param $booking
-     * @return bool
+     * Function to run through all the other booked options a user has in this Instance.
+     * If one of the linked courses before this option is uncompleted, function will return false, else true.
+     * @param $bookingoption
+     * @param $user
+     * @return false
+     * @throws \dml_exception
      */
-    public static function is_elective($booking) {
-        if ($booking->settings->iselective == 1) {
-            return true;
+    public static function check_if_allowed_to_inscribe($bookingoption, $user) {
+
+        global $DB;
+        // TODO: get all other option in this instance and check if user has completed them.
+
+        // First, get all booked options from this instance and user
+
+        $options = $DB->get_records('booking_answers', array('bookingid' => $bookingoption->bookingid, 'userid' => $user->id));
+
+        foreach ($options as $option) {
+
+            if ($option->id < $bookingoption->id) {
+
+                // check if the booking option has a course id
+
+                // if there is a course id, check if the course is completed
+
+                // if not, return false
+            }
         }
         return false;
+
     }
 
     public static function show_credits_message($booking) {
@@ -139,6 +160,12 @@ class booking_elective {
         $outdata->maxcredits = $booking->settings->maxcredits;
 
         $warning .= \html_writer::tag('div', get_string('creditsmessage', 'mod_booking', $outdata), array ('class' => 'alert alert-warning'));
+
+        if ($booking->settings->consumeatonce
+            && $outdata->creditsleft > 0) {
+            $warning .= \html_writer::tag('div', get_string('consumeatonce', 'mod_booking', $outdata), array ('class' => 'alert alert-warning'));
+        }
+
         return $warning;
     }
 
