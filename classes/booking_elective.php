@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace mod_booking;
+use core\event\course_completed;
 use mod_booking\booking_utils;
 use stdClass;
 
@@ -121,19 +122,22 @@ class booking_elective {
 
         $options = $DB->get_records('booking_answers', array('bookingid' => $bookingoption->bookingid, 'userid' => $user->id));
 
+        // We run through the list of options.
+        // The sorting order comes from the id.
         foreach ($options as $option) {
-
+            // Therefore we just have to look if lower IDs are finished.
             if ($option->id < $bookingoption->id) {
-
                 // check if the booking option has a course id
-
-                // if there is a course id, check if the course is completed
-
-                // if not, return false
+                if ($option->courseid) {
+                    $coursecompletion = new \completion_completion(['userid' => $user->id, 'course' => $option->courseid]);
+                    // We return false if we find an uncompleted course with lower id.
+                    if (!$coursecompletion) {
+                        return false;
+                    }
+                }
             }
+            return true;
         }
-        return false;
-
     }
 
     public static function show_credits_message($booking) {

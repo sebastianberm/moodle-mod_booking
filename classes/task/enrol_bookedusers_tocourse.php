@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 namespace mod_booking\task;
+use mod_booking\booking;
+use mod_booking\booking_elective;
 use mod_booking\booking_option;
 
 require_once($CFG->dirroot . '/mod/booking/lib.php');
@@ -49,10 +51,28 @@ class enrol_bookedusers_tocourse extends \core\task\scheduled_task {
                 mtrace("WARNING: Failed to get booking instance from option id: $optionid");
             }
             $boption = new booking_option($cm->id, $optionid);
+
+            // TODO: Make sure we don't enrol users how have not yet finished previous course.
+
+            $booking = $boption->booking;
+            $iselective = $booking->settings->iselective;
+            $enforceorder = $booking->settings->enforceorder;
+
+
             // Get all booked users of the relevant booking options.
             $bookedusers = $boption->get_all_users_booked();
             // Enrol all users to the course.
             foreach ($bookedusers as $bookeduser) {
+
+                // Todo: If enforceorder is active for this instance, check completion status of previous booked options.
+
+                if ($booking->is_elective()
+                    && $enforceorder == 1) {
+                    if (!booking_elective::check_if_allowed_to_inscribe($boption, $bookeduser)) {
+                        continue;
+                    }
+                }
+
                 $boption->enrol_user($bookeduser->userid);
                 mtrace("The user with the {$bookeduser->id} has been enrolled to the course {$boption->option->courseid}.");
             }
