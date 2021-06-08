@@ -120,23 +120,31 @@ class booking_elective {
 
         // First, get all booked options from this instance and user
 
-        $options = $DB->get_records('booking_answers', array('bookingid' => $bookingoption->bookingid, 'userid' => $user->id));
+        $options = $DB->get_records('booking_answers', array('bookingid' => $bookingoption->booking->id, 'userid' => $user->id));
 
         // We run through the list of options.
-        // The sorting order comes from the id.
+        // The sorting order comes from the ids, lower was booked first.
+
         foreach ($options as $option) {
             // Therefore we just have to look if lower IDs are finished.
-            if ($option->id < $bookingoption->id) {
-                // check if the booking option has a course id
-                if ($option->courseid) {
-                    $coursecompletion = new \completion_completion(['userid' => $user->id, 'course' => $option->courseid]);
-                    // We return false if we find an uncompleted course with lower id.
-                    if (!$coursecompletion) {
-                        return false;
-                    }
+
+            // if the found answer corresponds to the active booking action, we can inscribe.
+            if ($option->optionid == $bookingoption->optionid) {
+                return true;
+            }
+
+            // If not, we are at previously selected booking option.
+            // Now we have to check if it is completed, but to do so, we have to get the correspondding booking option.
+
+            $previousbookingoption = new booking_option($bookingoption->booking->cm->id, $option->optionid);
+            $courseid = $previousbookingoption->option->courseid;
+            if ($courseid) {
+                $coursecompletion = new \completion_completion(['userid' => $user->userid, 'course' => $courseid]);
+                // We return false if we find an uncompleted course with lower id.
+                if (!$coursecompletion || !$coursecompletion->is_complete()) {
+                    return false;
                 }
             }
-            return true;
         }
     }
 

@@ -77,7 +77,9 @@ class enrol_bookedusers_tocourse extends \core\task\scheduled_task {
                 mtrace("The user with the {$bookeduser->id} has been enrolled to the course {$boption->option->courseid}.");
             }
         }
-        if (!empty($boids)) {
+
+        // If it's an elective, we can't set enrolmentstatus to 1, because we need to run check again and again.
+        if (!empty($boids) && !$booking->is_elective()) {
             list($insql, $params) = $DB->get_in_or_equal(array_keys($boids));
             $DB->set_field_select('booking_options', 'enrolmentstatus', '1', 'id ' . $insql, $params);
         }
