@@ -43,6 +43,9 @@ $searchsurname = optional_param('searchsurname', '', PARAM_TEXT);
 $page = optional_param('page', '0', PARAM_INT);
 $done = optional_param('done', '0', PARAM_INT);
 
+// This Param is for electives, to know in which order booking was done.
+$listorder = optional_param('list', '', PARAM_TEXT);
+
 $perpage = 10;
 $conditions = array();
 $conditionsparams = array();
@@ -257,7 +260,13 @@ if (!$iselective && $download == '' && $form = data_submitted() && has_capabilit
 //} else if ($iselective  && !$done && $download == '' && $form = data_submitted() && has_capability('mod/booking:choose', $context)) {
 } else if ($iselective  && !$done && $download == '' && $action == 'multibooking' && has_capability('mod/booking:choose', $context)) {
     // Button to "book all selected electives" has been pressed
-    $electivesarray = booking_elective::get_electivesarray_from_user_prefs($cm->id);
+
+    if ($listorder) {
+        $electivesarray = json_decode($listorder);
+        // booking_elective::set_electivesarray_to_user_prefs($electivesarray);
+    } else {
+        $electivesarray = booking_elective::get_electivesarray_from_user_prefs($cm->id);
+    }
 
     if ( count($electivesarray) == 1 && $electivesarray[0] == '') {
         array_pop($electivesarray);
@@ -919,22 +928,16 @@ if (!$current and $bookingopen and has_capability('mod/booking:choose', $context
     // echo $OUTPUT->continue_button(new moodle_url('/course/view.php', array('id' => $course->id)));
 }
 
-$urloptions = array('id' => $cm->id, 'action' => 'multibooking', 'sesskey' => $USER->sesskey);
-$moodleurl = new moodle_url('view.php', $urloptions);
 
-// Show Button only if is Elective
+
+// Render this only if we are in elective mode.
 if ($iselective) {
-    // If all credits have to be consumed at once, only enable the "book all selected" button...
-    // ... when no more credits are left.
-    if ($booking->settings->consumeatonce == 1 && booking_elective::return_credits_left($booking) !== 0) {
-        $selectbtnoptions['class'] = 'btn btn-primary disabled';
-    } elseif (count(booking_elective::get_electivesarray_from_user_prefs($booking->cm->id)) == 0) {
-        // Also, disable the button when there is nothing selected.
-        $selectbtnoptions['class'] = 'btn btn-primary disabled';
-    } else {
-        $selectbtnoptions['class'] = 'btn btn-primary';
-    }
-    echo html_writer::link($moodleurl, get_string('bookelectivesbtn', 'booking'), $selectbtnoptions);
+
+    $rawdata = $tablealloptions->rawdata;
+
+    $data = new \mod_booking\output\elective_modal($booking, $rawdata);
+    $renderer = $PAGE->get_renderer('mod_booking');
+    echo $renderer->render_elective_modal($data);
 }
 
 echo $OUTPUT->box('<a href="http://www.wunderbyte.at">' . get_string('createdby', 'booking') . "</a>",

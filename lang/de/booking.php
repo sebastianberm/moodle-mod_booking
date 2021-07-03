@@ -221,6 +221,9 @@ $string['hidedescription'] = 'Info verstecken';
 $string['editteacherslink'] = 'Lehrer*innen bearbeiten';
 $string['electiveselectbtn'] = 'Wahlfach auswählen';
 $string['electivedeselectbtn'] = 'Wahlfach abwählen';
+$string['confirmbookingtitle'] = "Buchung bestätigen";
+$string['sortbookingoptions'] = "Bitte die Buchungsoptionen in die richtige Reihenfolge bringen. Die Kurse können nur in der hier festgelegten Reihenfolge absolviert werden. Der oberste Kurs muss zuerst absolviert werden.";
+$string['selectoptionsfirst'] = "Bitte zuerst die Buchungsoptionen auswählen.";
 
 // Mod_form.
 $string['signinlogoheader'] = 'Logo in der Kopfzeile auf der Unterschriftenliste';
