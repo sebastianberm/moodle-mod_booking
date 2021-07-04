@@ -939,6 +939,14 @@ class booking_option {
     public function enrol_user_coursestart($userid) {
         if ($this->option->enrolmentstatus == 2 OR
             ($this->option->enrolmentstatus < 2 AND $this->option->coursestarttime < time())) {
+
+            // This is a new elective function. We only allow booking in the right order.
+            if ($this->booking->is_elective()) {
+                if (!booking_elective::check_if_allowed_to_inscribe($this, $userid)) {
+                    mtrace("The user with the {$bookeduser->id} has to finish courses of other booking options first.");
+                    return;
+                }
+            }
             $this->enrol_user($userid);
         }
     }
@@ -1098,23 +1106,28 @@ class booking_option {
         global $DB;
         if (!$manual) {
             if (!$this->booking->settings->autoenrol) {
+                mtrace("The user with the {$userid} has mot been enrolled. Autoenrol not enabled.");
                 return; // Autoenrol not enabled.
             }
         }
         if (!$this->option->courseid) {
+            mtrace("The user with the {$userid} has mot been enrolled. No course specified.");
             return; // No course specified.
         }
 
         if (!enrol_is_enabled('manual')) {
+            mtrace("The user with the {$userid} has mot been enrolled. Manual enrolment not enabled.");
             return; // Manual enrolment not enabled.
         }
 
         if (!$enrol = enrol_get_plugin('manual')) {
+            mtrace("The user with the {$userid} has mot been enrolled. No manual enrolment plugin.");
             return; // No manual enrolment plugin.
         }
         if (!$instances = $DB->get_records('enrol',
                 array('enrol' => 'manual', 'courseid' => $this->option->courseid,
                     'status' => ENROL_INSTANCE_ENABLED), 'sortorder,id ASC')) {
+            mtrace("The user with the {$userid} has mot been enrolled. No manual enrolment instance on this course.");
             return; // No manual enrolment instance on this course.
         }
 

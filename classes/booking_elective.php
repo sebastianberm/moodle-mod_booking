@@ -109,43 +109,62 @@ class booking_elective {
      * Function to run through all the other booked options a user has in this Instance.
      * If one of the linked courses before this option is uncompleted, function will return false, else true.
      * @param $bookingoption
-     * @param $user
+     * @param $userid
      * @return false
      * @throws \dml_exception
      */
-    public static function check_if_allowed_to_inscribe($bookingoption, $user) {
+    public static function check_if_allowed_to_inscribe($bookingoption, $userid) {
 
         global $DB;
         // TODO: get all other option in this instance and check if user has completed them.
 
         // First, get all booked options from this instance and user
 
-        $options = $DB->get_records('booking_answers', array('bookingid' => $bookingoption->booking->id, 'userid' => $user->id));
+        $sql = "SELECT ba.id, ba.userid, ba.optionid, ba.bookingid, bo.courseid
+                FROM {booking_answers} ba
+                JOIN {booking_options} bo
+                ON ba.optionid=bo.id
+                WHERE ba.bookingid=:bookingid
+                AND ba.userid=:userid
+                ORDER BY ba.id ASC";
+
+        $answers = $DB->get_records_sql($sql, array('bookingid' => $bookingoption->booking->id, 'userid' => $userid));
 
         // We run through the list of options.
         // The sorting order comes from the ids, lower was booked first.
 
-        foreach ($options as $option) {
-            // Therefore we just have to look if lower IDs are finished.
+        foreach ($answers as $answer) {
 
-            // if the found answer corresponds to the active booking action, we can inscribe.
-            if ($option->optionid == $bookingoption->optionid) {
-                return true;
+
+            // We run through our booked options already in the right order.
+            // Either way, we have to check if this option has course attached and if the course is completed.
+            // If not, we check if the id is right. if so, we inscribe.
+            // If the id is not right, we stop going through answers and go to next booking option.
+            // if course isn't there OR completed, we go to the next answer.
+
+            // Get the completion status of this option.
+            // First get the associated booking option.
+
+
+
+            if ($courseid = $answer->courseid) {
+                $coursecompletion = new \completion_completion(['userid' => $userid, 'course' => $courseid]);
             }
-
-            // If not, we are at previously selected booking option.
-            // Now we have to check if it is completed, but to do so, we have to get the correspondding booking option.
-
-            $previousbookingoption = new booking_option($bookingoption->booking->cm->id, $option->optionid);
-            $courseid = $previousbookingoption->option->courseid;
-            if ($courseid) {
-                $coursecompletion = new \completion_completion(['userid' => $user->userid, 'course' => $courseid]);
-                // We return false if we find an uncompleted course with lower id.
-                if (!$coursecompletion || !$coursecompletion->is_complete()) {
+            if ($answer->optionid == $bookingoption->optionid) {
+                if (!$courseid || ($coursecompletion && !$coursecompletion->is_complete())) {
+                    return true;
+                } else {
+                    // If it's finished already, we don't need to inscribe again.
+                    return false;
+                }
+            } else {
+                if (!$courseid || ($coursecompletion && !$coursecompletion->is_complete())) {
                     return false;
                 }
             }
         }
+        // If in the end we didn't find an answer which would allow us to inscribe, we return false.
+        return false;
     }
 
     public static function show_credits_message($booking) {

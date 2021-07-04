@@ -68,7 +68,7 @@ class enrol_bookedusers_tocourse extends \core\task\scheduled_task {
 
                 if ($booking->is_elective()
                     && $enforceorder == 1) {
-                    if (!booking_elective::check_if_allowed_to_inscribe($boption, $bookeduser)) {
+                    if (!booking_elective::check_if_allowed_to_inscribe($boption, $bookeduser->id)) {
                         continue;
                     }
                 }

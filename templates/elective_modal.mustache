@@ -50,10 +50,19 @@
         </p>
         <ul id="sortable" class="list-group">
             {{#arrayofoptions}}
-                <li class="list-group-item d-flex justify-content-between align-items-center" data-id={{id}}>
-                    <div class="d-flex w-100 justify-content-between">
-                        <h3>{{text}}</h3>
-                        {{#str}} credits, mod_booking {{/str}}: {{credits}}
+                <li class="list-group-item" data-id={{id}}>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-1">
+                                <i class="fa fa-arrows-alt"></i>
+                             </div>
+                            <div class="col-6 text-left">
+                                    <h3>{{text}}</h3>
+                            </div>
+                            <div class="col-5 text-right">
+                                    {{#str}} credits, mod_booking {{/str}}: {{credits}}
+                            </div>
+                        </div>
                     </div>
                 </li>
             {{/arrayofoptions}}
