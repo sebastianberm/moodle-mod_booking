@@ -935,9 +935,11 @@ if ($iselective) {
 
     $rawdata = $tablealloptions->rawdata;
 
-    $data = new \mod_booking\output\elective_modal($booking, $rawdata);
-    $renderer = $PAGE->get_renderer('mod_booking');
-    echo $renderer->render_elective_modal($data);
+    if ($rawdata) {
+        $data = new \mod_booking\output\elective_modal($booking, $rawdata);
+        $renderer = $PAGE->get_renderer('mod_booking');
+        echo $renderer->render_elective_modal($data);
+    }
 }
 
 echo $OUTPUT->box('<a href="http://www.wunderbyte.at">' . get_string('createdby', 'booking') . "</a>",

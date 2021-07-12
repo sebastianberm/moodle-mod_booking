@@ -61,6 +61,11 @@ class elective_modal implements renderable, templatable {
 
         global $USER;
 
+        // If there are no list items, we return null.
+        if (!$rawdata) {
+            return;
+        }
+
         // First, we retrieve the saved order of the booking options.
 
         $arrayofoptions = booking_elective::get_electivesarray_from_user_prefs($booking->cm->id);
