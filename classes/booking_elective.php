@@ -264,7 +264,15 @@ class booking_elective {
      */
     public static function return_credits_selected($booking) {
         global $DB;
-        $electivesarray = self::get_electivesarray_from_user_prefs($booking->cm->id);
+
+        if (!isset($_GET['list'])
+                || (!$electivesarray = json_decode($_GET['list']))) {
+            $listorder = '[]';
+        } else {
+            $listorder = $_GET['list'];
+        }
+
+        $electivesarray = json_decode($listorder);
 
         $credits = 0;
         foreach ($electivesarray as $selected) {
@@ -296,71 +304,5 @@ class booking_elective {
             }
         }
         return false;
-    }
-
-    /**
-     * Helper function to get an array of all selected elective options of the current instance.
-     * @param number $cmid the instance id of the booking instance (course module id)
-     * @return array an array of the currently selected electives on the current booking instance.
-     */
-    public static function get_electivesarray_from_user_prefs ($cmid) {
-        $electivespref = get_user_preferences('selected_electives', '');
-
-        if ($electivespref && $electivespref != '') {
-            $dataobject = json_decode($electivespref);
-            if ($dataobject && isset($dataobject->$cmid)) {
-                return (array)$dataobject->$cmid;
-            }
-
-        }
-        return [];
-    }
-
-    /**
-     * Helper function to update the selected electives user preferences which will update the
-     * electives array in user preferences. Needs the updated object as parameter.
-     * @param stdClass the updated object (with instance id and updated electives array in "selected")
-     */
-    public static function set_electivesarray_to_user_prefs(stdClass $updatedobject) {
-        //set_user_preference('selected_electives', ''); // Debugging.
-        $jsonstring = get_user_preferences('selected_electives', '');
-        $electivespref = json_decode($jsonstring);
-        $instanceid = $updatedobject->instanceid;
-        if (!isset($electivespref->$instanceid)
-        || !in_array($updatedobject->optionid, $electivespref->$instanceid)) {
-            if (!$electivespref) {
-                $electivespref = new stdClass();
-            }
-            $electivespref->$instanceid[] = $updatedobject->optionid;
-        } else {
-            // Delete the value.
-            $arrayofids = (array)$electivespref->$instanceid;
-            $key = array_search($updatedobject->optionid, $arrayofids);
-            array_splice($arrayofids, $key, 1);
-            $electivespref->$instanceid = $arrayofids;
-        }
-        $jsonstring = json_encode($electivespref);
-        // Now recreate the string and save to user prefs.
-        set_user_preference('selected_electives', $jsonstring);
-    }
-
-
-    /**
-     * Function to set back the selected items in the user prefs.
-     * @param $cmid
-     * @throws \coding_exception
-     */
-    public static function reset_electivesarray_in_user_prefs($cmid) {
-        $electivespref = get_user_preferences('selected_electives', '');
-
-        if ($electivespref && $electivespref != '') {
-            $dataobject = json_decode($electivespref);
-            if ($dataobject && isset($dataobject->$cmid)) {
-                $dataobject->$cmid = [];
-                $jsonstring = json_encode($dataobject);
-                // Now recreate the string and save to user prefs.
-                set_user_preference('selected_electives', $jsonstring);
-            }
-        }
     }
 }

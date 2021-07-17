@@ -74,10 +74,24 @@ if (!empty($whichview)) {
 $iselective = $booking->is_elective();
 
 if ($iselective && $answer) {
-    $updateobject = new stdClass();
-    $updateobject->instanceid = $cm->id;
-    $updateobject->optionid = $answer;
-    booking_elective::set_electivesarray_to_user_prefs($updateobject);
+
+    //$updateobject = new stdClass();
+    //$updateobject->instanceid = $cm->id;
+    //$updateobject->optionid = $answer;
+    //booking_elective::set_electivesarray_to_user_prefs($updateobject);
+
+    $arrayofoptions = json_decode($listorder);
+
+    if (in_array($answer, $arrayofoptions)) {
+        $key = array_search($answer, $arrayofoptions);
+        array_splice($arrayofoptions, $key, 1);
+
+    } else {
+        $arrayofoptions[] = (int)$answer;
+    }
+    $listorder = json_encode($arrayofoptions);
+    $_GET['list'] = $listorder;
+
 }
 
 if ($optionid > 0) {
@@ -264,8 +278,6 @@ if (!$iselective && $download == '' && $form = data_submitted() && has_capabilit
     if ($listorder) {
         $electivesarray = json_decode($listorder);
         // booking_elective::set_electivesarray_to_user_prefs($electivesarray);
-    } else {
-        $electivesarray = booking_elective::get_electivesarray_from_user_prefs($cm->id);
     }
 
     if ( count($electivesarray) == 1 && $electivesarray[0] == '') {
@@ -285,7 +297,6 @@ if (!$iselective && $download == '' && $form = data_submitted() && has_capabilit
                 }
             }
         }
-        booking_elective::reset_electivesarray_in_user_prefs($cm->id);
 
         $urlparameters['id'] = $cm->id;
         $urlparameters['done'] = 1;
@@ -298,7 +309,6 @@ if (!$iselective && $download == '' && $form = data_submitted() && has_capabilit
         }
         die();
     } else {
-        booking_elective::reset_electivesarray_in_user_prefs($cm->id);
         $urlparameters['id'] = $cm->id;
         $urlparameters['done'] = 1;
         $url = new moodle_url("view.php", $urlparameters);
@@ -708,7 +718,15 @@ if (!$current and $bookingopen and has_capability('mod/booking:choose', $context
 
         if ($iselective) {
 
-            $electivesarray = booking_elective::get_electivesarray_from_user_prefs($cm->id);
+            if (!isset($_GET['list'])
+                    || (!$electivesarray = json_decode($_GET['list']))) {
+                $electivesarray = [];
+                $listorder = '[]';
+            } else {
+                $listorder = $_GET['list'];
+            }
+
+            $electivesarray = json_decode($listorder);
 
             $selectedarray = $electivesarray && $electivesarray[0] != '' ? implode(",", $electivesarray) : '0';
             $selectedarray = rtrim($selectedarray, ',');
@@ -936,7 +954,7 @@ if ($iselective) {
     $rawdata = $tablealloptions->rawdata;
 
     if ($rawdata) {
-        $data = new \mod_booking\output\elective_modal($booking, $rawdata);
+        $data = new \mod_booking\output\elective_modal($booking, $rawdata, $listorder);
         $renderer = $PAGE->get_renderer('mod_booking');
         echo $renderer->render_elective_modal($data);
     }

@@ -57,7 +57,7 @@ class elective_modal implements renderable, templatable {
      * @param string $sort sort by course/user/my
      * @param \stdClass $data
      */
-    public function __construct($booking, $rawdata) {
+    public function __construct($booking, $rawdata, $listorder = '[]') {
 
         global $USER;
 
@@ -68,20 +68,24 @@ class elective_modal implements renderable, templatable {
 
         // First, we retrieve the saved order of the booking options.
 
-        $arrayofoptions = booking_elective::get_electivesarray_from_user_prefs($booking->cm->id);
+        if (!$arrayofoptions = json_decode($listorder)) {
+            $arrayofoptions = [];
+            $listorder = '[]';
+        }
 
         foreach ($arrayofoptions as $item) {
             $this->arrayofoptions[] = $rawdata[$item];
         }
 
-        $urloptions = array('id' => $booking->cm->id, 'action' => 'multibooking', 'sesskey' => $USER->sesskey);
+        $urloptions = array('id' => $booking->cm->id, 'action' => 'multibooking', 'sesskey' => $USER->sesskey, 'list' => $listorder);
         $moodleurl = new \moodle_url('view.php', $urloptions);
+        $moodleurl = $moodleurl->out(false);
 
         // If all credits have to be consumed at once, only enable the "book all selected" button...
         // ... when no more credits are left.
         if ($booking->settings->consumeatonce == 1 && booking_elective::return_credits_left($booking) !== 0) {
             $selectbtnoptions['class'] = 'btn btn-primary disabled';
-        } elseif (count(booking_elective::get_electivesarray_from_user_prefs($booking->cm->id)) == 0) {
+        } elseif (count($arrayofoptions) == 0) {
             // Also, disable the button when there is nothing selected.
             $selectbtnoptions['class'] = 'btn btn-primary disabled';
         } else {

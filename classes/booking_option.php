@@ -943,7 +943,7 @@ class booking_option {
             // This is a new elective function. We only allow booking in the right order.
             if ($this->booking->is_elective()) {
                 if (!booking_elective::check_if_allowed_to_inscribe($this, $userid)) {
-                    mtrace("The user with the {$bookeduser->id} has to finish courses of other booking options first.");
+                    mtrace("The user with the {$userid} has to finish courses of other booking options first.");
                     return;
                 }
             }

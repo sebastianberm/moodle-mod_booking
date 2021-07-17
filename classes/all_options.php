@@ -486,7 +486,16 @@ class all_options extends table_sql {
                 $buttonoptions['whichview'] = $_GET['whichview'];
                 $buttonoptions['optionid'] = $values->id;
 
-                $electivesarray = booking_elective::get_electivesarray_from_user_prefs($this->cm->id);
+                if (!isset($_GET['list'])
+                    || (!$electivesarray = json_decode($_GET['list']))) {
+                    $electivesarray = [];
+                    $listorder = '[]';
+                } else {
+                    $listorder = $_GET['list'];
+                }
+                $buttonoptions['list'] = $listorder;
+
+                // $electivesarray = booking_elective::get_electivesarray_from_user_prefs($this->cm->id);
 
                 // Check if already selected.
                 $url = new moodle_url('view.php', $buttonoptions);
