@@ -943,7 +943,7 @@ class booking_option {
             // This is a new elective function. We only allow booking in the right order.
             if ($this->booking->is_elective()) {
                 if (!booking_elective::check_if_allowed_to_inscribe($this, $userid)) {
-                    mtrace("The user with the {$userid} has to finish courses of other booking options first.");
+                    // mtrace("The user with the userid {$userid} has to finish courses of other booking options first.");
                     return;
                 }
             }
@@ -1106,28 +1106,28 @@ class booking_option {
         global $DB;
         if (!$manual) {
             if (!$this->booking->settings->autoenrol) {
-                mtrace("The user with the {$userid} has mot been enrolled. Autoenrol not enabled.");
+                // mtrace("The user with the userid {$userid} has not been enrolled. Autoenrol not enabled.");
                 return; // Autoenrol not enabled.
             }
         }
         if (!$this->option->courseid) {
-            mtrace("The user with the {$userid} has mot been enrolled. No course specified.");
+            // mtrace("The user with the userid {$userid} has not been enrolled. No course specified.");
             return; // No course specified.
         }
 
         if (!enrol_is_enabled('manual')) {
-            mtrace("The user with the {$userid} has mot been enrolled. Manual enrolment not enabled.");
+            // mtrace("The user with the userid {$userid} has not been enrolled. Manual enrolment not enabled.");
             return; // Manual enrolment not enabled.
         }
 
         if (!$enrol = enrol_get_plugin('manual')) {
-            mtrace("The user with the {$userid} has mot been enrolled. No manual enrolment plugin.");
+            // mtrace("The user with the userid {$userid} has not been enrolled. No manual enrolment plugin.");
             return; // No manual enrolment plugin.
         }
         if (!$instances = $DB->get_records('enrol',
                 array('enrol' => 'manual', 'courseid' => $this->option->courseid,
                     'status' => ENROL_INSTANCE_ENABLED), 'sortorder,id ASC')) {
-            mtrace("The user with the {$userid} has mot been enrolled. No manual enrolment instance on this course.");
+            // mtrace("The user with the userid {$userid} has not been enrolled. No manual enrolment instance on this course.");
             return; // No manual enrolment instance on this course.
         }
 

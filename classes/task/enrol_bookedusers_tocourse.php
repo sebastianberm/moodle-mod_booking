@@ -74,7 +74,7 @@ class enrol_bookedusers_tocourse extends \core\task\scheduled_task {
                 }
 
                 $boption->enrol_user($bookeduser->userid);
-                mtrace("The user with the {$bookeduser->id} has been enrolled to the course {$boption->option->courseid}.");
+                // mtrace("The user with the id {$bookeduser->id} has been enrolled to the course {$boption->option->courseid}.");
             }
         }
 
