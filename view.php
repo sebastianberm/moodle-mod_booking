@@ -75,11 +75,6 @@ $iselective = $booking->is_elective();
 
 if ($iselective && $answer) {
 
-    //$updateobject = new stdClass();
-    //$updateobject->instanceid = $cm->id;
-    //$updateobject->optionid = $answer;
-    //booking_elective::set_electivesarray_to_user_prefs($updateobject);
-
     $arrayofoptions = json_decode($listorder);
 
     if (in_array($answer, $arrayofoptions)) {

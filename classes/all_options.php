@@ -272,6 +272,7 @@ class all_options extends table_sql {
 
         $output = '';
         $output .= html_writer::tag('h4', format_string($values->text, true, $this->booking->settings->course));
+
         // If the booking option has credits (for electives), then show them right below the title text.
         if ($this->booking->uses_credits()
                 && !empty($values->credits)) {
@@ -495,16 +496,21 @@ class all_options extends table_sql {
                 }
                 $buttonoptions['list'] = $listorder;
 
-                // $electivesarray = booking_elective::get_electivesarray_from_user_prefs($this->cm->id);
+                // Create URL for the buttons and add an anchor, so we can jump to it later on.
+                $anchor = 'btnanswer' . $values->id;
+                $url = new moodle_url('view.php', $buttonoptions, $anchor);
 
                 // Check if already selected.
-                $url = new moodle_url('view.php', $buttonoptions);
                 // Show the select button if the elective was not already selected.
                 if (!in_array($buttonoptions['answer'], $electivesarray)) {
-                    $button = html_writer::link($url, get_string('electiveselectbtn', 'booking'), ['class' => 'btn btn-info']);
+                    // Add an id and use an anchor# to jump to active selection.
+                    $button = html_writer::link($url, get_string('electiveselectbtn', 'booking'),
+                        [ 'class' => 'btn btn-info', 'id' => 'btnanswer' . $values->id]);
                 } else {
                     // Else, show a deselect button.
-                    $button = html_writer::link($url, get_string('electivedeselectbtn', 'booking'), ['class' => 'btn btn-danger']);
+                    // Add an id and use an anchor# to jump to active selection.
+                    $button = html_writer::link($url, get_string('electivedeselectbtn', 'booking'),
+                        ['class' => 'btn btn-danger', 'id' => 'btnanswer' . $values->id]);
                 }
             } else {
                 // Else show the default "Book now" button.
