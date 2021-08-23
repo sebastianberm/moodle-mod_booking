@@ -20,7 +20,7 @@
  *
  * @package mod_booking
  * @category event
- * @copyright 2014 David Bogner
+ * @copyright 2014-2021 David Bogner, Bernhard Fischer
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -37,6 +37,9 @@ $observers = array(
     array('eventname' => '\mod_booking\event\bookingoption_created',
         'callback' => 'mod_booking_observer::bookingoption_created'
         ),
+    array('eventname' => '\core\event\course_completed',
+        'callback' => 'mod_booking_observer::course_completed'
+    ),
     array('eventname' => '\mod_booking\event\teacher_added',
         'callback' => 'mod_booking_observer::teacher_added'
         ),

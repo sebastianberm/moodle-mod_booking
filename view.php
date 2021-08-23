@@ -86,7 +86,6 @@ if ($iselective && $answer) {
     }
     $listorder = json_encode($arrayofoptions);
     $_GET['list'] = $listorder;
-
 }
 
 if ($optionid > 0) {

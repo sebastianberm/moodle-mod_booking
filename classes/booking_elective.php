@@ -116,7 +116,7 @@ class booking_elective {
     public static function check_if_allowed_to_inscribe($bookingoption, $userid) {
 
         global $DB;
-        // TODO: get all other option in this instance and check if user has completed them.
+        // TODO: get all other options in this instance and check if user has completed them.
 
         // First, get all booked options from this instance and user
 
@@ -144,8 +144,6 @@ class booking_elective {
 
             // Get the completion status of this option.
             // First get the associated booking option.
-
-
 
             if ($courseid = $answer->courseid) {
                 $coursecompletion = new \completion_completion(['userid' => $userid, 'course' => $courseid]);
@@ -304,5 +302,58 @@ class booking_elective {
             }
         }
         return false;
+    }
+
+    /**
+     * Enrol users if course has started depending on enforceorder.
+     * This function will be executed both by the course_completed event and the scheduled task enrol_bookedusers_tocourse.
+     * @throws \coding_exception
+     * @throws \dml_exception
+     * @throws \moodle_exception
+     */
+    public static function enrol_booked_users_to_course() {
+        global $DB;
+        // Get all booking options with associated Moodle courses that have enrolmentstatus 0 and coursestartdate in the past.
+        $select = "enrolmentstatus < 1 AND coursestarttime < :now";
+        $now = time();
+        $boids = $DB->get_records_select_menu('booking_options', $select, ['now' => $now], '', 'id, bookingid');
+        foreach ($boids as $optionid => $bookingid) {
+            if ($bookingid) {
+                $cm = get_coursemodule_from_instance('booking', $bookingid);
+            } else {
+                mtrace("WARNING: Failed to get booking instance from option id: $optionid");
+            }
+            $boption = new booking_option($cm->id, $optionid);
+
+            // TODO: Make sure we don't enrol users who have not yet finished previous course.
+
+            $booking = $boption->booking;
+            // $iselective = $booking->settings->iselective; TODO: delete this?
+            $enforceorder = $booking->settings->enforceorder;
+
+            // Get all booked users of the relevant booking options.
+            $bookedusers = $boption->get_all_users_booked();
+            // Enrol all users to the course.
+            foreach ($bookedusers as $bookeduser) {
+
+                // Todo: If enforceorder is active for this instance, check completion status of previous booked options.
+
+                if ($booking->is_elective()
+                    && $enforceorder == 1) {
+                    if (!booking_elective::check_if_allowed_to_inscribe($boption, $bookeduser->id)) {
+                        continue;
+                    }
+                }
+
+                $boption->enrol_user($bookeduser->userid);
+                // mtrace("The user with the id {$bookeduser->id} has been enrolled to the course {$boption->option->courseid}.");
+            }
+        }
+
+        // If it's an elective, we can't set enrolmentstatus to 1, because we need to run check again and again.
+        if (!empty($boids) && !$booking->is_elective()) {
+            list($insql, $params) = $DB->get_in_or_equal(array_keys($boids));
+            $DB->set_field_select('booking_options', 'enrolmentstatus', '1', 'id ' . $insql, $params);
+        }
     }
 }

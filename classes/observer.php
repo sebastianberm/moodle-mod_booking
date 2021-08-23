@@ -20,6 +20,9 @@
  * @copyright 2015 Andraž Prinčič <atletek@gmail.com>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+use mod_booking\booking_elective;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -140,5 +143,21 @@ class mod_booking_observer {
      */
     public static function teacher_removed(\mod_booking\event\teacher_removed $event) {
         new \mod_booking\calendar($event->contextinstanceid, $event->objectid, $event->relateduserid, \mod_booking\calendar::TYPETEACHERREMOVE);
+    }
+
+    /**
+     * When a course is completed, check if the user needs to be enrolled in the next course.
+     *
+     * @param \core\event\course_completed $event
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws moodle_exception
+     */
+    public static function course_completed(\core\event\course_completed $event) {
+
+        // TODO: to be used by course_completed event get_coursemodules_in_course('booking', courseid)
+
+        // Call the enrolment function.
+        booking_elective::enrol_booked_users_to_course();
     }
 }
