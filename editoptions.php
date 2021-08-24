@@ -63,16 +63,16 @@ if ($optionid == -1 && $copyoptionid != 0) {
 
 // Elective. Retrieve values.
 
-$mustcominearray = \mod_booking\booking_elective::get_combine_array($optionid, 1);
+$mustcombinearray = \mod_booking\booking_elective::get_combine_array($optionid, 1);
 
-if (count($mustcominearray) != 0) {
-    $defaultvalues->mustcombine = $mustcominearray;
+if (count($mustcombinearray) != 0) {
+    $defaultvalues->mustcombine = $mustcombinearray;
 }
 
-$mustnotcominearray = \mod_booking\booking_elective::get_combine_array($optionid, 0);
+$mustnotcombinearray = \mod_booking\booking_elective::get_combine_array($optionid, 0);
 
-if (count($mustnotcominearray) != 0) {
-    $defaultvalues->mustnotcombine = $mustnotcominearray;
+if (count($mustnotcombinearray) != 0) {
+    $defaultvalues->mustnotcombine = $mustnotcombinearray;
 }
 
 if ($mform->is_cancelled()) {
