@@ -730,9 +730,10 @@ if (!$current and $bookingopen and has_capability('mod/booking:choose', $context
             }
 
             if ($whichview !== 'mybooking') {
-                $from .= " LEFT JOIN {booking_combinations} bc ON bo.id = bc.otheroptionid AND bc.optionid IN (". $selectedarray . ")";
-                $conditions[] = "(bc.cancombine = 1
-                OR bc.optionid IS null)";
+                $from .= " LEFT JOIN {booking_combinations} bc ON bo.id = bc.optionid
+                    AND bc.cancombine=0
+                    AND bc.otheroptionid IN (". $selectedarray . ")";
+                $conditions[] = "(bc.cancombine IS null)";
 
                 if ($booking->uses_credits()) {
                     $conditions[] = "((bo.credits <= :creditsleft) 
