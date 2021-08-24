@@ -54,14 +54,13 @@ class booking_elective {
 
         global $DB;
         // First we need to see if there are already entries in DB.
-        // We fetch cancombine and cannotcombine at the same time.
         $existingrecords = $DB->get_records('booking_combinations', array('optionid' => $optionid, 'cancombine' => $mustcombine));
 
         // Run through the array of selected options and save them to db.
         foreach ($otheroptions as $otheroptionid) {
 
             // Check if the record exists already.
-            if ($id = self::optionidexists($existingrecords, $otheroptionid, $mustcombine)) {
+            if ($id = self::otheroptionidexists($existingrecords, $otheroptionid, $mustcombine)) {
                     // Mark record as existing
                     $existingrecords[$id]->exists = true;
                 continue;
@@ -292,10 +291,10 @@ class booking_elective {
      * @param $mustcombine
      * @return false
      */
-    private static function optionidexists($array, $optionid, $mustcombine) {
+    private static function otheroptionidexists($array, $optionid, $mustcombine) {
         if ($optionid && $optionid !== 0) {
             foreach ($array as $item) {
-                if ($item->optionid == $optionid
+                if ($item->otheroptionid == $optionid
                         && $item->cancombine == $mustcombine ) {
                     return $item->id;
                 }
