@@ -154,10 +154,20 @@ class mod_booking_observer {
      * @throws moodle_exception
      */
     public static function course_completed(\core\event\course_completed $event) {
+        global $DB;
 
-        // TODO: to be used by course_completed event get_coursemodules_in_course('booking', courseid)
+        // Check if there is an associated booking_answer with status 'booked' for the userid and courseid.
+        $sql = 'SELECT ba.userid, bo.courseid
+                FROM {booking_answers} ba
+                JOIN {booking_options} bo
+                ON ba.optionid = bo.id
+                WHERE ba.userid = :userid AND ba.waitinglist = 0 AND bo.courseid = :courseid';
+        $params = ['userid' => $event->relateduserid, 'courseid' => $event->courseid];
 
-        // Call the enrolment function.
-        booking_elective::enrol_booked_users_to_course();
+        // Only execute if there are associated booking_answers.
+        if ($bookedanswers = $DB->get_records_sql($sql, $params)) {
+            // Call the enrolment function.
+            booking_elective::enrol_booked_users_to_course();
+        }
     }
 }
