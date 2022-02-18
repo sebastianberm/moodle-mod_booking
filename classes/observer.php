@@ -24,6 +24,8 @@ defined('MOODLE_INTERNAL') || die();
 
 use mod_booking\booking_option;
 use mod_booking\calendar;
+use mod_booking\event\booking_cancelled;
+use mod_booking\event\booking_debug;
 
 /**
  * Event observer for mod_booking.
@@ -52,8 +54,18 @@ class mod_booking_observer {
      * @param \core\event\user_enrolment_deleted $event
      */
     public static function user_enrolment_deleted(\core\event\user_enrolment_deleted $event) {
-        global $DB;
+        global $DB, $USER;
+
         $cp = (object) $event->other['userenrolment'];
+
+        // Log deletion of user.
+        $event = booking_debug::create(
+            array('objectid' => $cp->courseid,
+                'context' => \context_system::instance(),
+                'relateduserid' => $USER->id,
+                'other' => $event->other));
+        $event->trigger();
+
         if ($cp->lastenrol) {
             $sql = 'SELECT bo.id, bo.bookingid
             FROM {booking_options} bo
@@ -62,9 +74,27 @@ class mod_booking_observer {
             AND b.removeuseronunenrol = 1';
             $params = ['courseid' => $cp->courseid];
             $options = $DB->get_records_sql($sql, $params);
+
+            // Log deletion of user.
+            $event = booking_debug::create(
+            array('objectid' => $cp->courseid,
+                'context' => \context_system::instance(),
+                'relateduserid' => $USER->id,
+                'other' => $options));
+            $event->trigger();
+
             if (!empty($options)) {
                 foreach ($options as $option) {
                     $bo = booking_option::create_option_from_optionid($option->id, $option->bookingid);
+
+                    // Log deletion of user.
+                    $event = booking_debug::create(
+                    array('objectid' => $cp->courseid,
+                        'context' => \context_system::instance(),
+                        'relateduserid' => $USER->id,
+                        'other' => $bo));
+                    $event->trigger();
+
                     $bo->user_delete_response($cp->userid);
                 }
                 $optionids = array_keys($options);
