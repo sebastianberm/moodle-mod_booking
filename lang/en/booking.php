@@ -2138,3 +2138,13 @@ $string['nocancelreason'] = "You need to give a reason for canceling this bookin
 
 // Access.php.
 $string['booking:bookforothers'] = "Book for others";
+
+// Subbookings.
+$string['bookingsubbookingsheader'] = "Sub bookings";
+$string['bookingsubbooking'] = "Sub booking";
+$string['subbooking_name'] = "Name of the subbooking";
+$string['bookingsubbookingadd'] = 'Add a subbooking';
+
+$string['subbooking_timeslot'] = "Timeslot booking";
+$string['subbooking_timeslot_desc'] = "This opens timeslots for every booking date with a set duration.";
+$string['subbooking_duration'] = "Duration in minutes";

@@ -27,6 +27,7 @@ use mod_booking\singleton_service;
 use local_entities\entitiesrelation_handler;
 use local_entities\local\entities\entitydate;
 use mod_booking\bo_availability\bo_info;
+use mod_booking\subbookings\subbookings_info;
 use mod_booking\optiondates_handler;
 use moodle_url;
 use stdClass;
@@ -442,6 +443,10 @@ class option_form extends \moodleform {
         // TODO: expert/simple mode needs to work with this too!
         // Add availability conditions.
         bo_info::add_conditions_to_mform($mform, $optionid);
+
+        // TODO: expert/simple mode needs to work with this too!
+        // Add subbookings options.
+        subbookings_info::add_subbookings_to_mform($mform);
 
         // Workaround: Only show, if it is not turned off in the option form config.
         // We currently need this, because hideIf does not work with headers.

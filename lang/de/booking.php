@@ -1893,3 +1893,13 @@ $string['nocancelreason'] = "Sie müssen eine Grund für die Stornierung angeben
 
 // Access.php.
 $string['booking:bookforothers'] = "Für andere buchen";
+
+// Subbookings.
+$string['bookingsubbookingsheader'] = "Zusatzbuchungen";
+$string['bookingsubbooking'] = "Zusatzbuchungen";
+$string['subbooking_name'] = "Name der Zusatzbuchung";
+$string['bookingsubbookingadd'] = 'Füge eine Zusatzbuchung hinzu';
+
+$string['subbooking_timeslot'] = "Zeitfenster Buchung";
+$string['subbooking_timeslot_desc'] = "Mit dieser Funktion kann die Dauer von buchbaren Zeitfenstern für jedes Datum der Buchungsoption festgelegt werden.";
+$string['subbooking_duration'] = "Dauer in Minuten";
