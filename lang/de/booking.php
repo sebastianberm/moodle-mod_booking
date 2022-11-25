@@ -1899,6 +1899,10 @@ $string['bookingsubbookingsheader'] = "Zusatzbuchungen";
 $string['bookingsubbooking'] = "Zusatzbuchungen";
 $string['subbooking_name'] = "Name der Zusatzbuchung";
 $string['bookingsubbookingadd'] = 'Füge eine Zusatzbuchung hinzu';
+$string['bookingsubbookingedit'] = 'Bearbeite';
+$string['editsubbooking'] = 'Bearbeite Zusatzbuchung';
+
+$string['onlyaddsubbookingsonsavedoption'] = "Sie müssen diese neue Buchungsoption speichern, bevor sich Unterbuchungen hinzufügen können.";
 
 $string['subbooking_timeslot'] = "Zeitfenster Buchung";
 $string['subbooking_timeslot_desc'] = "Mit dieser Funktion kann die Dauer von buchbaren Zeitfenstern für jedes Datum der Buchungsoption festgelegt werden.";

@@ -2144,6 +2144,10 @@ $string['bookingsubbookingsheader'] = "Sub bookings";
 $string['bookingsubbooking'] = "Sub booking";
 $string['subbooking_name'] = "Name of the subbooking";
 $string['bookingsubbookingadd'] = 'Add a subbooking';
+$string['bookingsubbookingedit'] = 'Edit';
+$string['editsubbooking'] = 'Edit subbooking';
+
+$string['onlyaddsubbookingsonsavedoption'] = "You need to save this booking option before you can add subbookings.";
 
 $string['subbooking_timeslot'] = "Timeslot booking";
 $string['subbooking_timeslot_desc'] = "This opens timeslots for every booking date with a set duration.";
