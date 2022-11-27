@@ -2146,6 +2146,7 @@ $string['subbooking_name'] = "Name of the subbooking";
 $string['bookingsubbookingadd'] = 'Add a subbooking';
 $string['bookingsubbookingedit'] = 'Edit';
 $string['editsubbooking'] = 'Edit subbooking';
+$string['bookingsubbookingdelete'] = 'Delete subbooking';
 
 $string['onlyaddsubbookingsonsavedoption'] = "You need to save this booking option before you can add subbookings.";
 
