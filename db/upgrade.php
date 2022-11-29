@@ -3002,5 +3002,20 @@ function xmldb_booking_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2022112800, 'booking');
     }
 
+    if ($oldversion < 2022112801) {
+
+        // Define field block to be added to booking_subbooking_options.
+        $table = new xmldb_table('booking_subbooking_options');
+        $field = new xmldb_field('block', XMLDB_TYPE_INTEGER, '1', null, null, null, '0', 'json');
+
+        // Conditionally launch add field block.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Booking savepoint reached.
+        upgrade_mod_savepoint(true, 2022112801, 'booking');
+    }
+
     return true;
 }
