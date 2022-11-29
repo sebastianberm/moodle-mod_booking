@@ -1937,6 +1937,8 @@ $string['bo_cond_isbookable'] = 'isbookable: Booking is allowed';
 $string['bo_cond_isloggedin'] = 'isloggedin: User is logged in';
 $string['bo_cond_fullybookedoverride'] = 'fullybookedoverride: Can be overbooked by staff';
 $string['bo_cond_iscancelled'] = 'iscancelled: Booking option cancelled';
+$string['bo_cond_subbooking_blocks'] = 'subbookingblocks: Subbooking blocks this Booking option';
+$string['bo_cond_subbooking'] = 'subbooking: Subbooking adds additonal options to this Booking option';
 
 $string['bo_cond_booking_time_available'] = 'Within normal booking times';
 $string['bo_cond_booking_time_full_available'] = 'Within normal booking times. From {$a} until {$b}';
@@ -2009,8 +2011,19 @@ $string['bo_cond_iscancelled_full_not_available'] = 'This booking option is canc
 
 $string['bo_cond_isloggedin_available'] = 'Book it';
 $string['bo_cond_isloggedin_full_available'] = 'Booking is possible';
-$string['bo_cond_isloggedin_not_available'] = 'Log in to book this optin.';
+$string['bo_cond_isloggedin_not_available'] = 'Log in to book this option.';
 $string['bo_cond_isloggedin_full_not_available'] = 'User is not logged in.';
+
+$string['bo_cond_subbookingblocks_available'] = 'Book it';
+$string['bo_cond_subbookingblocks_full_available'] = 'Booking is possible';
+$string['bo_cond_subbookingblocks_not_available'] = 'Not allowed to book.';
+$string['bo_cond_subbookingblocks_full_not_available'] = 'Subbooking blocks this booking option.';
+
+// This does not really block, it just handels available subbookings.
+$string['bo_cond_subbooking_available'] = 'Book it';
+$string['bo_cond_subbooking_full_available'] = 'Booking is possible';
+$string['bo_cond_subbooking_not_available'] = 'Book it';
+$string['bo_cond_subbooking_full_not_available'] = 'Booking is possible';
 
 // BO conditions in mform.
 $string['userinfofieldoff'] = 'No user profile field selected';
