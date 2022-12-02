@@ -28,7 +28,7 @@ use local_entities\entitiesrelation_handler;
 use local_entities\local\entities\entitydate;
 use mod_booking\bo_availability\bo_info;
 use mod_booking\subbookings\subbookings_info;
-use mod_booking\optiondates_handler;
+use mod_booking\dates_handler;
 use moodle_url;
 use stdClass;
 
@@ -891,7 +891,7 @@ class option_form extends \moodleform {
      * @return void
      */
     private static function order_all_dates_to_book_in_form(stdClass &$fromform) {
-        optiondates_handler::add_values_from_post_to_form($fromform);
+        dates_handler::add_values_from_post_to_form($fromform);
 
         // For the form validation, we need to pass the values to book in a special form.
         // We only need those timestamps which are new.
