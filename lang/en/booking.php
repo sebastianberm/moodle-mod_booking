@@ -1546,3 +1546,31 @@ $string['bstlink'] = 'Show';
 // All_options.php.
 $string['infoalreadybooked'] = '<div class="infoalreadybooked"><i>You are already booked for this option.</i></div>';
 $string['infowaitinglist'] = '<div class="infowaitinglist"><i>You are on the waiting list for this option.</i></div>';
+
+// Elective.
+$string['bookelectivesbtn'] = 'Book selected electives';
+$string['electivesbookedsuccess'] = 'Your selected electives have been booked successfully.';
+$string['errormultibooking'] = 'There was an ERROR when booking the electives.';
+$string['electiveselectbtn'] = 'Select elective';
+$string['electivedeselectbtn'] = 'Deselect elective';
+$string['confirmbookingtitle'] = "Confirm booking";
+$string['sortbookingoptions'] = "Please sort your bookings in the right order. You will only be able to access the associated coures one after the other. Top comes first.";
+$string['selectoptionsfirst'] = "Please select booking options first.";
+$string['electivesettings'] = 'Elective Settings';
+$string['iselective'] = 'Use instance as elective';
+$string['maxcredits'] = 'Max credits to use';
+$string['maxcredits_help'] = 'You can define the max amount of credits users can or must use when booking options. You can define in every booking option how many credits it is worth.';
+$string['unlimitedcredits'] = 'Don\'t use credits';
+$string['enforceorder'] = 'Enforce booking order';
+$string['enforceorder_help'] = 'Users will be inscribed only once they have completed the previous booking option';
+$string['consumeatonce'] = 'All credits have to be consumed at once';
+$string['consumeatonce_help'] = 'Uses can only book once, and they have to book all options in one step.';
+$string['credits'] = 'Credits';
+$string['credits_help'] = 'The number of credits which will be used by booking this option.';
+$string['mustcombine'] = 'Necessary booking options';
+$string['mustcombine_help'] = 'Booking options which have to be combined with this option';
+$string['mustnotcombine'] = 'Excluded booking options';
+$string['mustnotcombine_help'] = 'Booking options which can\'t be  combined with this option';
+$string['nooptionselected'] = 'No booking option selected';
+$string['creditsmessage'] = 'You have {$a->creditsleft} of {$a->maxcredits} credits left.';
+$string['notemplateyet'] = 'No template yet';
