@@ -2319,7 +2319,7 @@ function xmldb_booking_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2021112908, 'booking');
     }
 
-    if ($oldversion < 2022122700) {
+    if ($oldversion < 2021112914) {
         // Add field consecutive to instance.
         $table = new xmldb_table('booking');
 
@@ -2351,7 +2351,6 @@ function xmldb_booking_upgrade($oldversion) {
             $dbman->add_field($table, $field);
         }
 
-
         // Add field credits to booking options.
         $table = new xmldb_table('booking_options');
         $field = new xmldb_field('credits', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
@@ -2378,11 +2377,9 @@ function xmldb_booking_upgrade($oldversion) {
             $dbman->create_table($table);
         }
 
-
         // Booking savepoint reached.
-        upgrade_mod_savepoint(true, 2022122700, 'booking');
+        upgrade_mod_savepoint(true, 2021112914, 'booking');
     }
-
 
     return true;
 }
