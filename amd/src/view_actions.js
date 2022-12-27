@@ -23,7 +23,7 @@
  * @since 3.1
  */
 
-define(['jquery', 'core/config', 'mod_booking/jquery.barrating'],
+define(['jquery', 'core/config', 'mod_booking/jquery.barrating', 'jqueryui'],
         function($, mdlconfig) {
             return {
                 setup : function(id) {
@@ -100,6 +100,17 @@ define(['jquery', 'core/config', 'mod_booking/jquery.barrating'],
                                 $('#studentsform [id=check' + selected + ']')
                                         .prop('checked', 'checked');
                             });
+                    $("#sortable").sortable().on('sortupdate', function() {
+
+                        // In this function we append the link with the right sorting order of the items.
+                        var list = $("li").map(function() {
+                            return $(this).data("id");
+                        }).get();
+                        var link = $('#confirmbutton').attr('href');
+                        link = link.split('&list=');
+                        link = link[0] + '&list=' + JSON.stringify(list);
+                        $('#confirmbutton').attr('href', link);
+                    });
                 }
             };
         });
