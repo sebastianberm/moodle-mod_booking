@@ -79,6 +79,20 @@ if ($optionid == -1 && $copyoptionid != 0) {
     $defaultvalues->id = $cm->id;
 }
 
+// Elective. Retrieve values.
+
+$mustcombinearray = \mod_booking\booking_elective::get_combine_array($optionid, 1);
+
+if (count($mustcombinearray) != 0) {
+    $defaultvalues->mustcombine = $mustcombinearray;
+}
+
+$mustnotcombinearray = \mod_booking\booking_elective::get_combine_array($optionid, 0);
+
+if (count($mustnotcombinearray) != 0) {
+    $defaultvalues->mustnotcombine = $mustnotcombinearray;
+}
+
 if ($mform->is_cancelled()) {
     $redirecturl = new moodle_url('view.php', array('id' => $cm->id));
     redirect($redirecturl, '', 0);
