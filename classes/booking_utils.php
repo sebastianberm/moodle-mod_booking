@@ -296,11 +296,43 @@ class booking_utils {
                         'optionid' => $values->id);
             }
 
-            $url = new moodle_url($baseurl . '/mod/booking/view.php', $buttonoptions);
+            if ($this->booking->is_elective()) {
+                $buttonoptions['whichview'] = $_GET['whichview'];
+                $buttonoptions['optionid'] = $values->id;
 
-            $button = '<div class="col-ap-booknow">' . $OUTPUT->single_button($url,
+                if (!isset($_GET['list'])
+                    || (!$electivesarray = json_decode($_GET['list']))) {
+                    $electivesarray = [];
+                    $listorder = '[]';
+                } else {
+                    $listorder = $_GET['list'];
+                }
+                $buttonoptions['list'] = $listorder;
+
+                // Create URL for the buttons and add an anchor, so we can jump to it later on.
+                $anchor = 'btnanswer' . $values->id;
+                $url = new moodle_url('view.php', $buttonoptions, $anchor);
+
+                // Check if already selected.
+                // Show the select button if the elective was not already selected.
+                if (!in_array($buttonoptions['answer'], $electivesarray)) {
+                    // Add an id and use an anchor# to jump to active selection.
+                    $button = html_writer::link($url, get_string('electiveselectbtn', 'booking'),
+                        [ 'class' => 'btn btn-info', 'id' => 'btnanswer' . $values->id]);
+                } else {
+                    // Else, show a deselect button.
+                    // Add an id and use an anchor# to jump to active selection.
+                    $button = html_writer::link($url, get_string('electivedeselectbtn', 'booking'),
+                        ['class' => 'btn btn-danger', 'id' => 'btnanswer' . $values->id]);
+                }
+            } else {
+                // Else show the default "Book now" button.
+                $url = new moodle_url('view.php', $buttonoptions);
+                $button = $OUTPUT->single_button($url,
                     (empty($values->btnbooknowname) ? get_string('booknow', 'booking') : $values->btnbooknowname),
-                    $buttonmethod) . '</div>';
+                    'post');
+            }
+
         }
 
         if (($values->limitanswers && ($availability == "full")) || ($availability == "closed") || !$underlimit ||

@@ -279,10 +279,19 @@ class all_options extends table_sql {
             $data->modalcounter = $values->id;
 
             // We can go with the data from bookingoption_description directly to modal.
-            return $output->render_col_text_modal($data);
+            $returnstring = $output->render_col_text_modal($data);
         } else {
-            return $output->render_bookingoption_description($data);
+            $returnstring = $output->render_bookingoption_description($data);
         }
+
+        // If the booking option has credits (for electives), then show them right below the title text.
+        if ($this->booking->uses_credits()
+                && !empty($values->credits)) {
+            $returnstring .= html_writer::tag('pre', $values->credits . ' ' . format_string(get_string('credits', 'booking'), true,
+                                                                $this->booking->settings->course));
+        }
+
+        return $returnstring;
     }
 
     protected function col_description($values) {
