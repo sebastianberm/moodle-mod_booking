@@ -48,13 +48,15 @@
         <p>
             {{#str}} sortbookingoptions, mod_booking {{/str}}
         </p>
-        <ul id="sortable" class="list-group">
+        <ul id="wb-sortabe" class="list-group">
             {{#arrayofoptions}}
                 <li class="list-group-item" data-id={{id}}>
                     <div class="container">
                         <div class="row">
                             <div class="col-1">
-                                <i class="fa fa-arrows-alt"></i>
+                                {{^isteacherorderforced}}
+                                    <i class="fa fa-arrows-alt"></i>
+                                {{/isteacherorderforced}}
                              </div>
                             <div class="col-6 text-left">
                                     <h3>{{text}}</h3>

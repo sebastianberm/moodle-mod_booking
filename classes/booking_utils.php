@@ -297,7 +297,7 @@ class booking_utils {
             }
 
             if ($this->booking->is_elective()) {
-                $buttonoptions['whichview'] = $_GET['whichview'];
+                $buttonoptions['whichview'] = $_GET['whichview'] ?? '';
                 $buttonoptions['optionid'] = $values->id;
 
                 if (!isset($_GET['list'])

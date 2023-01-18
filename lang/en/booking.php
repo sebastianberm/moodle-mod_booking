@@ -1574,3 +1574,6 @@ $string['mustnotcombine_help'] = 'Booking options which can\'t be  combined with
 $string['nooptionselected'] = 'No booking option selected';
 $string['creditsmessage'] = 'You have {$a->creditsleft} of {$a->maxcredits} credits left.';
 $string['notemplateyet'] = 'No template yet';
+$string['electiveforcesortorder'] = 'Teacher can force sort order';
+$string['enforceteacherorder'] = 'Enforce teachers order';
+$string['enforceteacherorder_help'] = 'Users will not be able to define order of selected options but they will be determined by teacher';

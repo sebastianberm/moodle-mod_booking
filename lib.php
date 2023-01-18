@@ -580,6 +580,7 @@ function booking_update_options($optionvalues, $context) {
     }
 
     $option = new stdClass();
+    $option->sortorder = $optionvalues->sortorder ?? 0;
     $option->bookingid = $optionvalues->bookingid;
 
     // Bugfix: Use !empty instead of isset to check for 0 too.

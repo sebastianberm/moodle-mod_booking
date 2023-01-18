@@ -47,7 +47,10 @@ if ((has_capability('mod/booking:updatebooking', $context) || has_capability('mo
     print_error('nopermissions');
 }
 
-$mform = new option_form(null, array('bookingid' => $cm->instance, 'optionid' => $optionid, 'cmid' => $cm->id, 'context' => $context));
+$mform = new option_form(
+    null,
+    array('bookingid' => $cm->instance, 'optionid' => $optionid, 'cmid' => $cm->id, 'context' => $context)
+);
 
 // Duplicate this booking option.
 if ($optionid == -1 && $copyoptionid != 0) {
@@ -59,6 +62,7 @@ if ($optionid == -1 && $copyoptionid != 0) {
     $defaultvalues->bookingname = $booking->settings->name;
     $defaultvalues->bookingid = $cm->instance;
     $defaultvalues->id = $cm->id;
+    $defaultvalues->enforceteacherorder = 0;
 
     // Create a new duplicate of the old booking option.
     $optionid = booking_update_options($defaultvalues, $context);

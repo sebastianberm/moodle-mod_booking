@@ -69,7 +69,6 @@ $iselective = $booking->is_elective();
 if ($iselective && $answer) {
 
     $arrayofoptions = json_decode($listorder);
-
     if (in_array($answer, $arrayofoptions)) {
         $key = array_search($answer, $arrayofoptions);
         array_splice($arrayofoptions, $key, 1);
@@ -77,7 +76,9 @@ if ($iselective && $answer) {
     } else {
         $arrayofoptions[] = (int)$answer;
     }
+
     $listorder = json_encode($arrayofoptions);
+
     $_GET['list'] = $listorder;
 }
 
@@ -587,6 +588,7 @@ if (!$current and $bookingopen and has_capability('mod/booking:choose', $context
         $optionsfields = explode(',', $booking->settings->optionsfields);
 
         $optionsfields[] = 'availableplaces';
+        $optionsfields[] = 'sortorder';
 
         foreach ($optionsfields as $value) {
             switch ($value) {
@@ -628,6 +630,7 @@ if (!$current and $bookingopen and has_capability('mod/booking:choose', $context
                          bo.maxanswers,
                          bo.maxoverbooking,
                          bo.credits,
+                         bo.sortorder,
                   (SELECT COUNT(*)
                    FROM {booking_answers} ba
                    WHERE ba.optionid = bo.id
@@ -950,10 +953,20 @@ if (!$current and $bookingopen and has_capability('mod/booking:choose', $context
 // Render this only if we are in elective mode.
 if ($iselective) {
 
+    $bookingSettings = $booking->settings;
+
     $rawdata = $tablealloptions->rawdata;
+    // enable user sorting
+
+    $enableteacherorder = false;
+    if ($bookingSettings->enforceorder == 0 && $bookingSettings->enforceteacherorder == 1) {
+        $enableteacherorder = true;
+    } else if($bookingSettings->enforceorder == 0 && $bookingSettings->enforceteacherorder == 0) {
+        $PAGE->requires->js_call_amd('mod_booking/elective-sorting', 'electiveSorting');
+    }
 
     if ($rawdata) {
-        $data = new \mod_booking\output\elective_modal($booking, $rawdata, $listorder);
+        $data = new \mod_booking\output\elective_modal($booking, $rawdata, $listorder, $enableteacherorder);
         $renderer = $PAGE->get_renderer('mod_booking');
         echo $renderer->render_elective_modal($data);
     }

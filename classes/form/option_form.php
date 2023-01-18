@@ -287,6 +287,9 @@ class option_form extends moodleform {
         $mform->addElement('autocomplete', 'mustnotcombine', get_string("mustnotcombine", "booking"), $optionsarray, $options);
         $mform->addHelpButton('mustnotcombine', 'mustnotcombine', 'mod_booking');
 
+        $mform->addElement('text', 'sortorder', get_string('electiveforcesortorder', 'booking'));
+        $mform->setType('sortorder', PARAM_INT);
+
         // Advanced options.
         $mform->addElement('header', 'advancedoptions', get_string('advancedoptions', 'booking'));
 

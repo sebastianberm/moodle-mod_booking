@@ -244,6 +244,10 @@ class mod_booking_mod_form extends moodleform_mod {
         $mform->addElement('checkbox', 'enforceorder', get_string('enforceorder', 'booking'));
         $mform->addHelpButton('enforceorder', 'enforceorder', 'mod_booking');
 
+        $mform->addElement('advcheckbox', 'enforceteacherorder', get_string('enforceteacherorder', 'booking'));
+        $mform->setDefault('enforceteacherorder', 0);
+        $mform->addHelpButton('enforceteacherorder', 'enforceteacherorder', 'mod_booking');
+
         $mform->addElement('checkbox', 'consumeatonce', get_string('consumeatonce', 'booking'));
         $mform->addHelpButton('consumeatonce', 'consumeatonce', 'mod_booking');
 

@@ -51,13 +51,16 @@ class elective_modal implements renderable, templatable {
     /** @var array $arrayofoptions */
     public $arrayofoptions = [];
 
+    /** @var bool */
+    public $isteacherorderforced = false;
+
     /**
      * Constructor
      *
      * @param string $sort sort by course/user/my
      * @param \stdClass $data
      */
-    public function __construct($booking, $rawdata, $listorder = '[]') {
+    public function __construct($booking, $rawdata, $listorder = '[]', $isteacherorderforced = false) {
 
         global $USER;
 
@@ -75,6 +78,18 @@ class elective_modal implements renderable, templatable {
 
         foreach ($arrayofoptions as $item) {
             $this->arrayofoptions[] = $rawdata[$item];
+        }
+
+        // resort based on teacher sort order
+        if($isteacherorderforced) {
+            $this->isteacherorderforced = true;
+            usort($this->arrayofoptions, function ($a, $b) {
+                if ($a->sortorder == $b->sortorder) {
+                    return 0;
+                }
+
+                return $a->sortorder < $b->sortorder ? -1 : 1;
+            });
         }
 
         $urloptions = array('id' => $booking->cm->id, 'action' => 'multibooking', 'sesskey' => $USER->sesskey, 'list' => $listorder);
@@ -101,7 +116,8 @@ class elective_modal implements renderable, templatable {
         return [
                 'modalbuttonclass' => $this->modalbuttonclass,
                 'confirmbutton' => $this->confirmbutton,
-                'arrayofoptions' => $this->arrayofoptions
+                'arrayofoptions' => $this->arrayofoptions,
+                'isteacherorderforced' => $this->isteacherorderforced
         ];
     }
 }

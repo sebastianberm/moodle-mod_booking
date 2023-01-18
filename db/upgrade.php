@@ -2381,5 +2381,35 @@ function xmldb_booking_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2021112914, 'booking');
     }
 
+    if ($oldversion < 2023011101) {
+
+        // Define field sortorder to be added to booking_options.
+        $table = new xmldb_table('booking_options');
+        $field = new xmldb_field('sortorder', XMLDB_TYPE_INTEGER, '10', null, null, null, '0', 'credits');
+
+        // Conditionally launch add field sortorder.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Booking savepoint reached.
+        upgrade_mod_savepoint(true, 2023011101, 'booking');
+    }
+
+    if ($oldversion < 2023011202) {
+
+        // Define field enforteacherceorder to be added to booking.
+        $table = new xmldb_table('booking');
+        $field = new xmldb_field('enforceteacherorder', XMLDB_TYPE_INTEGER, '1', null, null, null, '0', 'enforceorder');
+
+        // Conditionally launch add field enforteacherceorder.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Booking savepoint reached.
+        upgrade_mod_savepoint(true, 2023011202, 'booking');
+    }
+
     return true;
 }

@@ -102,6 +102,7 @@
         <FIELD NAME="consumeatonce" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="All credits will have to be consumed with one booking step"/>
         <FIELD NAME="maxcredits" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="How many credits can be used in this instance by user"/>
         <FIELD NAME="enforceorder" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="1 if enrolement in booked courses should wait for previous booked course to be completed."/>
+        <FIELD NAME="enforceteacherorder" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -151,6 +152,7 @@
         <FIELD NAME="duration" TYPE="int" LENGTH="11" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Duration - information."/>
         <FIELD NAME="parentid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Parent id of booking option - only for recurring."/>
         <FIELD NAME="credits" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="1" SEQUENCE="false" COMMENT="Credits can define the 'price' of this booking option."/>
+        <FIELD NAME="sortorder" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="This is to force order for elective booking options"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
