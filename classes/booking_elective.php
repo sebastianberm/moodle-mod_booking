@@ -328,7 +328,7 @@ class booking_elective {
 
             $booking = $boption->booking;
             // $iselective = $booking->settings->iselective; TODO: delete this?
-            $enforceorder = $booking->settings->enforceorder;
+            $enforceorder = !empty($booking->settings->enforceorder) || !empty($booking->settings->enforceteacherorder) ? 1 : 0;
 
             // Get all booked users of the relevant booking options.
             $bookedusers = $boption->get_all_users_booked();
@@ -339,7 +339,7 @@ class booking_elective {
 
                 if ($booking->is_elective()
                     && $enforceorder == 1) {
-                    if (!booking_elective::check_if_allowed_to_inscribe($boption, $bookeduser->id)) {
+                    if (!self::check_if_allowed_to_inscribe($boption, $bookeduser->id)) {
                         continue;
                     }
                 }
