@@ -24,12 +24,55 @@
 
 import {WunderByteJS} from "mod_booking/wunderbyte";
 
+const SELECTOR = {
+    CONFIRMBUTTON: '#confirmbutton',
+    SORTCONTAINER: 'ul#wb-sortabe',
+    SORTITEM: 'li.list-group-item',
+};
+
+/**
+ * Elective sorting.
+ */
 export function electiveSorting() {
     let options = {
-        items: 'li.list-group-item',
-        container: 'ul#wb-sortabe'
+        items: SELECTOR.SORTITEM,
+        container: SELECTOR.SORTCONTAINER
     };
 
     let wunderbyteJS = new WunderByteJS();
     wunderbyteJS.sortable(options);
+
+    // Add the change listener to the sortable items to update list link.
+    const confirmButton = document.querySelector(SELECTOR.CONFIRMBUTTON);
+    const sortContainer = document.querySelector(SELECTOR.SORTCONTAINER);
+
+    // Options for the observer (which mutations to observe)
+    const config = { attributes: true, childList: true, subtree: true };
+
+    // Callback function to execute when mutations are observed
+    const callback = (mutationList) => {
+    for (const mutation of mutationList) {
+        if (mutation.type === 'childList') {
+            let url = confirmButton.getAttribute('href');
+
+            let list = [];
+            document.querySelectorAll(SELECTOR.SORTITEM).forEach(element => {
+                list.push(parseInt(element.dataset.id));
+            });
+
+            url = url.split('&list=');
+            url = url[0] + '&list=' + JSON.stringify(list);
+
+            confirmButton.setAttribute('href', url);
+        }
+    }
+    };
+
+    // Create an observer instance linked to the callback function
+    const observer = new MutationObserver(callback);
+
+    // Start observing the target node for configured mutations
+    if (sortContainer) {
+        observer.observe(sortContainer, config);
+    }
 }

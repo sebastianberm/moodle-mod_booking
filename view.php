@@ -953,15 +953,15 @@ if (!$current and $bookingopen and has_capability('mod/booking:choose', $context
 // Render this only if we are in elective mode.
 if ($iselective) {
 
-    $bookingSettings = $booking->settings;
+    $bookingsettings = $booking->settings;
 
     $rawdata = $tablealloptions->rawdata;
     // enable user sorting
 
     $enableteacherorder = false;
-    if ($bookingSettings->enforceorder == 0 && $bookingSettings->enforceteacherorder == 1) {
+    if ($bookingsettings->enforceteacherorder == 1) {
         $enableteacherorder = true;
-    } else if($bookingSettings->enforceorder == 0 && $bookingSettings->enforceteacherorder == 0) {
+    } else {
         $PAGE->requires->js_call_amd('mod_booking/elective-sorting', 'electiveSorting');
     }
 

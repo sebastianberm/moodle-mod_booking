@@ -100,7 +100,10 @@ define(['jquery', 'core/config', 'mod_booking/jquery.barrating', 'jqueryui'],
                                 $('#studentsform [id=check' + selected + ']')
                                         .prop('checked', 'checked');
                             });
-                    $("#sortable").sortable().on('sortupdate', function() {
+                    $("#wb-sortable").sortable().on('sortupdate', function() {
+
+                        // eslint-disable-next-line no-console
+                        console.log('sortable update');
 
                         // In this function we append the link with the right sorting order of the items.
                         var list = $("li").map(function() {

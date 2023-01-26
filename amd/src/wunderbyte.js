@@ -43,12 +43,13 @@ WunderByteJS.prototype.sortable = function (opt) {
         sortableItems.forEach(item => {
             item.setAttribute('draggable', true);
         });
-
-        sortableContainer.addEventListener('dragstart', this.sortable.bind(this));
+        if (sortableContainer) {
+            sortableContainer.addEventListener('dragstart', this.sortable.bind(this));
+        }
     };
 
     this.sortable = function (event) {
-        draggingItem = event.target;
+        draggingItem = event.target.closest('.list-group-item');
 
         // Limiting the movement type
         event.dataTransfer.effectAllowed = 'move';
@@ -69,7 +70,8 @@ WunderByteJS.prototype.sortable = function (opt) {
     };
 
     this.getMouseOffset = function (event) {
-        let r = event.target.getBoundingClientRect();
+        const element = event.target.closest('.list-group-item');
+        let r = element.getBoundingClientRect();
         return {
             x: event.pageX - r.left,
             y: event.pageY - r.top
@@ -80,11 +82,13 @@ WunderByteJS.prototype.sortable = function (opt) {
         event.preventDefault();
         event.dataTransfer.dropEffect = 'move';
 
-        var target = event.target;
-        if (target && target !== draggingItem && target.nodeName == 'DIV') {
+        var target = event.target.closest('.list-group-item');
+
+        if (target && target !== draggingItem && target.nodeName == 'LI') {
             // Sorting
+
             const offset = this.getMouseOffset(event);
-            const middleY = this.getVerticalCenter(event.target);
+            const middleY = this.getVerticalCenter(target);
 
             if (offset.y > middleY && target.nextSibling) {
                 sortableContainer.insertBefore(draggingItem, target.nextSibling);
