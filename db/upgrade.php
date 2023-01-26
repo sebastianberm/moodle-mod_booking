@@ -2319,7 +2319,7 @@ function xmldb_booking_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2021112908, 'booking');
     }
 
-    if ($oldversion < 2021112914) {
+    if ($oldversion < 2021112917) {
         // Add field consecutive to instance.
         $table = new xmldb_table('booking');
 
@@ -2378,10 +2378,10 @@ function xmldb_booking_upgrade($oldversion) {
         }
 
         // Booking savepoint reached.
-        upgrade_mod_savepoint(true, 2021112914, 'booking');
+        upgrade_mod_savepoint(true, 2021112917, 'booking');
     }
 
-    if ($oldversion < 2023011101) {
+    if ($oldversion < 2021112918) {
 
         // Define field sortorder to be added to booking_options.
         $table = new xmldb_table('booking_options');
@@ -2393,10 +2393,10 @@ function xmldb_booking_upgrade($oldversion) {
         }
 
         // Booking savepoint reached.
-        upgrade_mod_savepoint(true, 2023011101, 'booking');
+        upgrade_mod_savepoint(true, 2021112918, 'booking');
     }
 
-    if ($oldversion < 2023011202) {
+    if ($oldversion < 2021112919) {
 
         // Define field enforteacherceorder to be added to booking.
         $table = new xmldb_table('booking');
@@ -2408,7 +2408,7 @@ function xmldb_booking_upgrade($oldversion) {
         }
 
         // Booking savepoint reached.
-        upgrade_mod_savepoint(true, 2023011202, 'booking');
+        upgrade_mod_savepoint(true, 2021112919, 'booking');
     }
 
     return true;
