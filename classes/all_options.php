@@ -274,7 +274,7 @@ class all_options extends table_sql {
 
         $data = new \mod_booking\output\bookingoption_description($this->booking, $values, null, DESCRIPTION_WEBSITE, true, $forbookeduser);
 
-        if ($this->booking->settings->showdescriptionmode == 0) {
+        if (empty($this->booking->settings->showdescriptionmode)) {
             // We will have a number of modals on this site, therefore we have to distinguish them.
             $data->modalcounter = $values->id;
 

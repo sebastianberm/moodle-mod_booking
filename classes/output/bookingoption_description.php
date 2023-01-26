@@ -150,7 +150,7 @@ class bookingoption_description implements renderable, templatable {
         switch ($descriptionparam) {
             case DESCRIPTION_WEBSITE:
                 // Only show "already booked" or "on waiting list" text in modal.
-                if ($booking->settings->showdescriptionmode == 0) {
+                if (empty($booking->settings->showdescriptionmode)) {
                     if ($forbookeduser) {
                         // If it is for booked user, we show a short info text that the option is already booked.
                         $this->booknowbutton = get_string('infoalreadybooked', 'booking');
