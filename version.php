@@ -23,7 +23,7 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2021112914; // IMPORTANT: On this branch only increment the LAST TWO DIGITS!!
+$plugin->version = 2021112919; // IMPORTANT: On this branch only increment the LAST TWO DIGITS!!
 $plugin->requires = 2019111800; // Requires this Moodle version. Current: Moodle 3.8.
 $plugin->release = 'v7.0.22.13'; // IMPORTANT: On this branch only increment the LAST TWO DIGITS!!
 $plugin->maturity = MATURITY_STABLE;
