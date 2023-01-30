@@ -402,7 +402,7 @@ function get_rendered_eventdescription(int $optionid, int $cmid,
 
     $booking = singleton_service::get_instance_of_booking_by_cmid($cmid);
 
-    $data = new bookingoption_description($optionid, null, $descriptionparam, true, $forbookeduser);
+    $data = new bookingoption_description($optionid, null, $descriptionparam, true, $forbookeduser, null, current_language());
     $output = $PAGE->get_renderer('mod_booking');
 
     if ($descriptionparam == DESCRIPTION_ICAL) {
@@ -413,7 +413,26 @@ function get_rendered_eventdescription(int $optionid, int $cmid,
         return $output->render_bookingoption_description_mail($data);
     } else if ($descriptionparam == DESCRIPTION_CALENDAR) {
         // If this is used for an event.
-        return $output->render_bookingoption_description_event($data);
+        $rendereddescription = '';
+        $stringman = get_string_manager();
+        $langs = $stringman->get_list_of_translations();
+        if (count($langs) > 1 && multilang2_filter_is_enabled()) {
+            // We have more than one language installed, so we use filters.
+            foreach ($langs as $lang => $value) {
+                $rendereddescription .= '{mlang ' . $lang . '}';
+                $data = new bookingoption_description($optionid, null, $descriptionparam, true, $forbookeduser, null, $lang);
+                $rendereddescription .= $output->render_bookingoption_description_event($data);
+                $rendereddescription .= "{mlang}";
+            }
+
+        } else {
+            // We only have one language which is the current_language().
+            $data = new bookingoption_description($optionid, null, $descriptionparam, true,
+                $forbookeduser, null, current_language());
+            $rendereddescription = $output->render_bookingoption_description_event($data);
+        }
+
+        return $rendereddescription;
     }
 
     return $output->render_bookingoption_description($data);
@@ -539,4 +558,19 @@ function booking_getoptionstatus($starttime = 0, $endtime = 0) {
     }
 
     return "";
+}
+
+/**
+ * Helper function to check if multilanguage v2 filter is turned on.
+ * @return bool true if turned on, else false
+ */
+function multilang2_filter_is_enabled() {
+    $filterstates = filter_get_global_states();
+    if (isset($filterstates['multilang2']->active) && $filterstates['multilang2']->active) {
+        // Multilanguage filter is turned on.
+        return true;
+    } else {
+        // Multilanguage filter is turned off.
+        return false;
+    }
 }

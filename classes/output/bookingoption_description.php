@@ -138,6 +138,9 @@ class bookingoption_description implements renderable, templatable {
      * @param null $bookingevent
      * @param int $descriptionparam
      * @param bool $withcustomfields
+     * @param bool $forbookeduser
+     * @param object $user
+     * @param string $lang
      */
     public function __construct(
             int $optionid,
@@ -145,9 +148,15 @@ class bookingoption_description implements renderable, templatable {
             int $descriptionparam = DESCRIPTION_WEBSITE, // Default.
             bool $withcustomfields = true,
             bool $forbookeduser = null,
-            object $user = null) {
+            object $user = null,
+            string $lang = '') {
 
         global $CFG, $PAGE, $USER;
+
+        $currentlang = current_language();
+        if (empty($lang)) {
+            $lang = $currentlang;
+        }
 
         // Performance: Last param is set to true so users won't be retrieved from DB.
         // phpcs:ignore Squiz.PHP.CommentedOutCode.Found,moodle.Commenting.InlineComment.NotCapital
@@ -234,7 +243,11 @@ class bookingoption_description implements renderable, templatable {
         if (!isset($PAGE->context)) {
             $PAGE->set_context(context_module::instance($cmid));
         }
+
+        // Localize description with language filters.
+        force_current_language($lang);
         $this->description = format_text($settings->description, FORMAT_HTML);
+        force_current_language($currentlang);
 
         // Do the same for internal annotation.
         $this->annotation = format_text($settings->annotation, FORMAT_HTML);
