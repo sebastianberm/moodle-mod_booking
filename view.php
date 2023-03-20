@@ -243,15 +243,31 @@ if (!$iselective && $form = data_submitted() && has_capability('mod/booking:choo
 
     $success = true;
     if (!empty($electivesarray)) {
+
+        $bookingorder = [];
         foreach ($electivesarray as $answer) {
             if (!empty($answer)) {
                 // Now submit a response for every selected elective.
                 $bookingdata = new booking_option($cm->id, (int)$answer, array(), 0, 0, false);
-                $bookingdata->apply_tags();
+                $bookingorder[] = $bookingdata;
+            }
+        }
 
-                if (!$bookingdata->user_submit_response($USER)) {
-                    $success = false;
-                }
+        usort($bookingorder, function($a, $b) {
+            if($a->option->sortorder < $b->option->sortorder) {
+                return -1;
+            } else if ($a->option->sortorder > $b->option->sortorder) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
+
+        foreach ($bookingorder as $bookingdata) {
+
+            $bookingdata->apply_tags();
+            if (!$bookingdata->user_submit_response($USER)) {
+                $success = false;
             }
         }
 
